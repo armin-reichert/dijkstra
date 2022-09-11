@@ -5,7 +5,9 @@
 .locations
 
 los, Losheim am See, 49.51, 6.75
+wei, Weiskrichen, 49.557, 6.818
 wad, Wadern, 49.534, 6.89
+met, Mettlach, 49.493, 6.593
 mzg, Merzig, 49.449, 6.643
 bec, Beckingen, 49.391, 6.705
 dil, Dillingen, 49.353, 6.714
@@ -18,6 +20,7 @@ vlk, Völklingen, 49.255, 6.859
 sbr, Saarbrücken, 49.238, 6.997
 wnd, St. Wendel, 49.468, 7.167
 nkr, Neunkirchen, 49.349, 7.177
+per, Perl, 49.473, 6.386
 epp, Eppelborn, 49.409, 6.964
 hom, Homburg, 49.329, 7.339
 igb, St. Ingbert, 49.278, 7.112
@@ -29,35 +32,41 @@ tho, Tholey, 49.482, 7.032
 
 garbage line (see log for error message)
 
-bec, dil, 3.5f
-epp, nkr, 21.5f
-epp, sbr, 31.0f
-epp, heu, 10.0f
-dil, nal, 6.0f
-dil, sls, 9.0f
-heu, vlk, 12.0f
-heu, sbr, 14.5f
-heu, sls, 20.5f
-heu, nkr, 24.0f
-igb, hom, 22.0f
-igb, nkr, 10.5f
-leb, epp, 8.0f
-leb, nal, 11.0f
-leb, tho, 17f
-leb, heu, 9.5f
-los, mzg, 13.2f
-los, wad, 15.0f
-los, slz, 17.0f
-mzg, bec, 12.5f
-nkr, hom, 19.0f
-sbr, igb, 11.0f
-slz, nal, 10.5f
-slz, wad, 18.0f
-slz, leb, 5f
-sls, nal, 11.0f
-sls, vlk, 14.0f
-vlk, sbr, 12.5f
-tho, wnd, 13.0f
-wad, tho, 19.5f
-wnd, nkr, 19.0f
-wnd, hom, 29.0f
+bec, dil, 3.5
+epp, nkr, 21.5
+epp, sbr, 31.0
+epp, heu, 10.0
+dil, nal, 6.0
+dil, sls, 9.0
+heu, vlk, 12.0
+heu, sbr, 14.5
+heu, sls, 20.5
+heu, nkr, 24.0
+igb, hom, 22.0
+igb, nkr, 10.5
+leb, epp, 8.0
+leb, nal, 11.0
+leb, tho, 17
+leb, heu, 9.5
+los, met, 15.0
+los, mzg, 13.2
+los, wad, 15.0
+los, wei, 8.5
+los, slz, 17.0
+met, per, 19.5
+mzg, bec, 12.5
+mzg, met, 9.5
+mzg, per, 24.0
+nkr, hom, 19.0
+sbr, igb, 11.0
+slz, nal, 10.5
+slz, wad, 18.0
+slz, leb, 5
+sls, nal, 11.0
+sls, vlk, 14.0
+vlk, sbr, 12.5
+tho, wnd, 13.0
+wad, tho, 19.5
+wad, wei, 6.5
+wnd, nkr, 19.0
+wnd, hom, 29.0
