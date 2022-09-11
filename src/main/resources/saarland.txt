@@ -1,0 +1,63 @@
+# comment lines start with hash symbol
+
+# the .locations marker starts the location section
+
+.locations
+
+los, Losheim am See, 49.51, 6.75
+wad, Wadern, 49.534, 6.89
+mzg, Merzig, 49.449, 6.643
+bec, Beckingen, 49.391, 6.705
+dil, Dillingen, 49.353, 6.714
+slz, Schmelz, 49.432, 6.843
+leb, Lebach, 49.41, 6.91
+nal, Nalbach, 49.378, 6.781
+heu, Heusweiler, 49.338, 6.929
+sls, Saarlouis, 49.313, 6.752
+vlk, Völklingen, 49.255, 6.859
+sbr, Saarbrücken, 49.238, 6.997
+wnd, St. Wendel, 49.468, 7.167
+nkr, Neunkirchen, 49.349, 7.177
+epp, Eppelborn, 49.409, 6.964
+hom, Homburg, 49.329, 7.339
+igb, St. Ingbert, 49.278, 7.112
+tho, Tholey, 49.482, 7.032
+
+# the .roads marker starts the road section
+
+.roads
+
+garbage line (see log for error message)
+
+bec, dil, 3.5f
+epp, nkr, 21.5f
+epp, sbr, 31.0f
+epp, heu, 10.0f
+dil, nal, 6.0f
+dil, sls, 9.0f
+heu, vlk, 12.0f
+heu, sbr, 14.5f
+heu, sls, 20.5f
+heu, nkr, 24.0f
+igb, hom, 22.0f
+igb, nkr, 10.5f
+leb, epp, 8.0f
+leb, nal, 11.0f
+leb, tho, 17f
+leb, heu, 9.5f
+los, mzg, 13.2f
+los, wad, 15.0f
+los, slz, 17.0f
+mzg, bec, 12.5f
+nkr, hom, 19.0f
+sbr, igb, 11.0f
+slz, nal, 10.5f
+slz, wad, 18.0f
+slz, leb, 5f
+sls, nal, 11.0f
+sls, vlk, 14.0f
+vlk, sbr, 12.5f
+tho, wnd, 13.0f
+wad, tho, 19.5f
+wnd, nkr, 19.0f
+wnd, hom, 29.0f
