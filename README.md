@@ -1,2 +1,5 @@
 # dijkstra
-Demo application for the Dijkstra algorithm
+
+A simple demo application for the Dijkstra algorithm.
+
+![Demo App](screenshot.png)
