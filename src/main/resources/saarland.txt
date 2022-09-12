@@ -24,12 +24,14 @@ nkr, Neunkirchen, 49.349, 7.177
 non, Nonnweiler, 49.608, 6.964
 per, Perl, 49.473, 6.386
 sbr, Saarbrücken, 49.238, 6.997
+sib, Siersburg, 49.365, 6.668
 sls, Saarlouis, 49.313, 6.752
 slz, Schmelz, 49.432, 6.843
 tho, Tholey, 49.482, 7.032
 ueb, Überherrn, 49.239, 6.7
 vlk, Völklingen, 49.255, 6.859
 wad, Wadern, 49.534, 6.89
+wal, Wallerfangen, 49.331, 6.716
 wei, Weiskirchen, 49.557, 6.818
 wnd, St. Wendel, 49.468, 7.167
 
@@ -40,11 +42,13 @@ garbage line (see log for error message)
 .roads
 
 bec, dil, 3.5
+bec, sib, 5.0
 blk, hom, 14.0
 blk, igb, 15.0
 blk, man, 9.0
 blk, sbr, 25.0
 dil, nal, 6.0
+dil, sib, 6.0
 dil, sls, 9.0
 epp, heu, 10.0
 epp, nkr, 21.5
@@ -82,9 +86,11 @@ non, wad, 11.5
 non, tho, 19.5
 non, wnd, 30.0
 sbr, igb, 11.0
+sib, wal, 6.5
 sls, nal, 11.0
 sls, ueb, 10.5
 sls, vlk, 14.0
+sls, wal, 4.0
 slz, leb, 5
 slz, nal, 10.5
 slz, wad, 18.0
