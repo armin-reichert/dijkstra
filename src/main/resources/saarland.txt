@@ -30,7 +30,7 @@ tho, Tholey, 49.482, 7.032
 ueb, Überherrn, 49.239, 6.7
 vlk, Völklingen, 49.255, 6.859
 wad, Wadern, 49.534, 6.89
-wei, Weiskrichen, 49.557, 6.818
+wei, Weiskirchen, 49.557, 6.818
 wnd, St. Wendel, 49.468, 7.167
 
 # the .roads marker starts the road section
