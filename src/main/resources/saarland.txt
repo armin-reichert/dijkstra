@@ -4,6 +4,7 @@
 
 .locations
 
+blk, Blieskastel, 49.238, 7.259
 los, Losheim am See, 49.51, 6.75
 wei, Weiskrichen, 49.557, 6.818
 wad, Wadern, 49.534, 6.89
@@ -28,11 +29,15 @@ tho, Tholey, 49.482, 7.032
 
 # the .roads marker starts the road section
 
-.roads
-
 garbage line (see log for error message)
 
+.roads
+
 bec, dil, 3.5
+
+blk, hom, 14.0
+blk, igb, 15.0
+blk, sbr, 25.0
 epp, nkr, 21.5
 epp, sbr, 31.0
 epp, heu, 10.0
