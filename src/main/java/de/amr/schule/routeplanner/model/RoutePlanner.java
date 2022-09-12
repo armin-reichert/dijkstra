@@ -97,7 +97,11 @@ public class RoutePlanner {
 				var v = (RoadMapLocation) edge.to(); // edge = (u, v)
 				var altCost = cost(u) + edge.cost();
 				if (altCost < cost(v)) {
-					LOGGER.trace("Shorter path to %s found: old cost=%.1f new cost=%.1f".formatted(v, cost(v), altCost));
+					if (cost(v) == Float.POSITIVE_INFINITY) {
+						LOGGER.trace("Path to %s found: cost=%.1f parent=%s".formatted(v, altCost, u));
+					} else {
+						LOGGER.trace("Better path to %s found: cost=%.1f (was: %.1f) parent=%s".formatted(v, altCost, cost(v), u));
+					}
 					// "decrease key" is not supported by Java priority queue, use remove/add instead
 					boolean removed = q.remove(v);
 					if (removed) {
