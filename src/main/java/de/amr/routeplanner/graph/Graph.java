@@ -22,27 +22,45 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.schule.routeplanner.graph;
+package de.amr.routeplanner.graph;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
  * @author Armin Reichert
  */
-public class Vertex {
+public class Graph {
 
-	private List<Edge> adjEdges;
+	private final Map<Object, Vertex> vertexByKey = new HashMap<>();
 
-	public void addEdge(Vertex to, float cost) {
-		if (adjEdges == null) {
-			adjEdges = new ArrayList<>(3);
+	public void addVertex(Object key, Vertex vertex) {
+		if (vertexByKey.containsKey(key)) {
+			throw new IllegalArgumentException("Vertex with key '" + key + "' already exists.");
 		}
-		adjEdges.add(new Edge(this, to, cost));
+		vertexByKey.put(key, vertex);
 	}
 
-	public Stream<Edge> outgoingEdges() {
-		return adjEdges == null ? Stream.empty() : adjEdges.stream();
+	public Optional<Vertex> vertex(Object key) {
+		return Optional.ofNullable(vertexByKey.get(key));
+	}
+
+	public Stream<Vertex> vertices() {
+		return vertexByKey.values().stream();
+	}
+
+	public Stream<Edge> edges() {
+		return vertices().flatMap(Vertex::outgoingEdges);
+	}
+
+	public void addEdge(Vertex either, Vertex other, float cost) {
+		addDirectedEdge(either, other, cost);
+		addDirectedEdge(other, either, cost);
+	}
+
+	public void addDirectedEdge(Vertex source, Vertex target, float cost) {
+		source.addEdge(target, cost);
 	}
 }

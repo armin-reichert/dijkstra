@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.schule.routeplanner;
+package de.amr.routeplanner;
 
 import java.awt.event.ActionEvent;
 import java.util.MissingResourceException;
@@ -38,10 +38,10 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.amr.schule.routeplanner.model.RoadMap;
-import de.amr.schule.routeplanner.model.RoadMapReader;
-import de.amr.schule.routeplanner.model.RoutePlanner;
-import de.amr.schule.routeplanner.ui.RoutePlannerWindow;
+import de.amr.routeplanner.model.RoadMap;
+import de.amr.routeplanner.model.RoadMapReader;
+import de.amr.routeplanner.model.RoutePlanner;
+import de.amr.routeplanner.ui.RoutePlannerWindow;
 
 /**
  * @author Armin Reichert

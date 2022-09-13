@@ -22,33 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.schule.routeplanner.model;
+package de.amr.routeplanner.graph;
 
-import de.amr.schule.routeplanner.graph.Vertex;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author Armin Reichert
  */
-public class RoadMapLocation extends Vertex {
+public class Vertex {
 
-	private final String name;
-	private final GeoCoord coord;
+	private List<Edge> adjEdges;
 
-	public RoadMapLocation(String name, float latitude, float longitude) {
-		this.name = name;
-		coord = new GeoCoord(latitude, longitude);
+	public void addEdge(Vertex to, float cost) {
+		if (adjEdges == null) {
+			adjEdges = new ArrayList<>(3);
+		}
+		adjEdges.add(new Edge(this, to, cost));
 	}
 
-	public String name() {
-		return name;
-	}
-
-	public GeoCoord coord() {
-		return coord;
-	}
-
-	@Override
-	public String toString() {
-		return "[%s %.3f %.3f]".formatted(name, coord.latitude(), coord.longitude());
+	public Stream<Edge> outgoingEdges() {
+		return adjEdges == null ? Stream.empty() : adjEdges.stream();
 	}
 }

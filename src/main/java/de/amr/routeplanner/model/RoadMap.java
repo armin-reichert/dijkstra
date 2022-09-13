@@ -22,14 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.schule.routeplanner.model;
+package de.amr.routeplanner.model;
 
 import java.util.Comparator;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import de.amr.schule.routeplanner.graph.Graph;
-import de.amr.schule.routeplanner.graph.Vertex;
+import de.amr.routeplanner.graph.Graph;
+import de.amr.routeplanner.graph.Vertex;
 
 /**
  * @author Armin Reichert

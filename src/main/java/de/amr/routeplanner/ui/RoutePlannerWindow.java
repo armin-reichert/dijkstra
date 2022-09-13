@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.schule.routeplanner.ui;
+package de.amr.routeplanner.ui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -51,10 +51,10 @@ import javax.swing.WindowConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.amr.schule.routeplanner.model.GeoCoord;
-import de.amr.schule.routeplanner.model.RoadMap;
-import de.amr.schule.routeplanner.model.RoadMapLocation;
-import de.amr.schule.routeplanner.model.RoutePlanner;
+import de.amr.routeplanner.model.GeoCoord;
+import de.amr.routeplanner.model.RoadMap;
+import de.amr.routeplanner.model.RoadMapLocation;
+import de.amr.routeplanner.model.RoutePlanner;
 import net.miginfocom.swing.MigLayout;
 
 /**

@@ -22,11 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.schule.routeplanner.model;
+package de.amr.routeplanner.graph;
 
 /**
  * @author Armin Reichert
- *
  */
-public record GeoCoord(float latitude, float longitude) {
+public record Edge(Vertex from, Vertex to, float cost) {
 }

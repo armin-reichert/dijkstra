@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.schule.routeplanner.ui;
+package de.amr.routeplanner.ui;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;

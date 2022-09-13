@@ -22,45 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.schule.routeplanner.graph;
+package de.amr.routeplanner.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
+import de.amr.routeplanner.graph.Vertex;
 
 /**
  * @author Armin Reichert
  */
-public class Graph {
+public class RoadMapLocation extends Vertex {
 
-	private final Map<Object, Vertex> vertexByKey = new HashMap<>();
+	private final String name;
+	private final GeoCoord coord;
 
-	public void addVertex(Object key, Vertex vertex) {
-		if (vertexByKey.containsKey(key)) {
-			throw new IllegalArgumentException("Vertex with key '" + key + "' already exists.");
-		}
-		vertexByKey.put(key, vertex);
+	public RoadMapLocation(String name, float latitude, float longitude) {
+		this.name = name;
+		coord = new GeoCoord(latitude, longitude);
 	}
 
-	public Optional<Vertex> vertex(Object key) {
-		return Optional.ofNullable(vertexByKey.get(key));
+	public String name() {
+		return name;
 	}
 
-	public Stream<Vertex> vertices() {
-		return vertexByKey.values().stream();
+	public GeoCoord coord() {
+		return coord;
 	}
 
-	public Stream<Edge> edges() {
-		return vertices().flatMap(Vertex::outgoingEdges);
-	}
-
-	public void addEdge(Vertex either, Vertex other, float cost) {
-		addDirectedEdge(either, other, cost);
-		addDirectedEdge(other, either, cost);
-	}
-
-	public void addDirectedEdge(Vertex source, Vertex target, float cost) {
-		source.addEdge(target, cost);
+	@Override
+	public String toString() {
+		return "[%s %.3f %.3f]".formatted(name, coord.latitude(), coord.longitude());
 	}
 }

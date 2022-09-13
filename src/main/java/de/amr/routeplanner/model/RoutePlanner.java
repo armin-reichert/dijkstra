@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.schule.routeplanner.model;
+package de.amr.routeplanner.model;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -98,19 +98,20 @@ public class RoutePlanner {
 				var altCost = cost(u) + edge.cost();
 				if (altCost < cost(v)) {
 					if (cost(v) == Float.POSITIVE_INFINITY) {
-						LOGGER.trace("Path to %s found: cost=%.1f parent=%s".formatted(v, altCost, u));
+						LOGGER.trace("Found first path to %s: cost=%.1f parent=%s".formatted(v, altCost, u));
 					} else {
-						LOGGER.trace("Better path to %s found: cost=%.1f (was: %.1f) parent=%s".formatted(v, altCost, cost(v), u));
+						LOGGER.trace("Found cheaper path to %s: cost=%.1f (was: %.1f) parent=%s (was: %s)".formatted(v, altCost,
+								cost(v), u, parent.get(v)));
 					}
 					// "decrease key" is not supported by Java priority queue, use remove/add instead
 					boolean removed = q.remove(v);
 					if (removed) {
-						LOGGER.trace("%s (cost=%.1f) removed from priority queue".formatted(v, cost(v)));
+						LOGGER.trace("Removed from PQ: %s (cost=%.1f)".formatted(v, cost(v)));
 					}
 					cost.put(v, altCost);
 					parent.put(v, u);
 					q.add(v);
-					LOGGER.trace("%s (cost=%.1f) added to priority queue".formatted(v, cost(v)));
+					LOGGER.trace("Added to PQ: %s (cost=%.1f)".formatted(v, cost(v)));
 				}
 			});
 		}
