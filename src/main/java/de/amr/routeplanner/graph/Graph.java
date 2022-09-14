@@ -31,19 +31,21 @@ import java.util.stream.Stream;
 
 /**
  * @author Armin Reichert
+ * 
+ * @param K type of keys for referencing vertices
  */
-public class Graph {
+public class Graph<K> {
 
-	private final Map<Object, Vertex> vertexByKey = new HashMap<>();
+	private final Map<K, Vertex> vertexByKey = new HashMap<>();
 
-	public void addVertex(Object key, Vertex vertex) {
+	public void addVertex(K key, Vertex vertex) {
 		if (vertexByKey.containsKey(key)) {
 			throw new IllegalArgumentException("Vertex with key '" + key + "' already exists.");
 		}
 		vertexByKey.put(key, vertex);
 	}
 
-	public Optional<Vertex> vertex(Object key) {
+	public Optional<Vertex> vertex(K key) {
 		return Optional.ofNullable(vertexByKey.get(key));
 	}
 

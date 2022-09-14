@@ -34,19 +34,19 @@ import de.amr.routeplanner.graph.Vertex;
 /**
  * @author Armin Reichert
  */
-public class RoadMap extends Graph {
+public class RoadMap extends Graph<String> {
 
 	public static int orderByName(RoadMapLocation v1, RoadMapLocation v2) {
 		return v1.name().compareTo(v2.name());
 	}
 
-	public RoadMapLocation getOrCreateLocation(String name, float latitude, float longitude) {
-		var location = vertex(name);
+	public RoadMapLocation getOrCreateLocation(String key, float latitude, float longitude) {
+		var location = vertex(key);
 		if (location.isPresent()) {
 			return (RoadMapLocation) location.get();
 		}
-		var newLocation = new RoadMapLocation(name, latitude, longitude);
-		addVertex(name, newLocation);
+		var newLocation = new RoadMapLocation(key, latitude, longitude);
+		addVertex(key, newLocation);
 		return newLocation;
 	}
 
