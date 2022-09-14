@@ -24,6 +24,7 @@ SOFTWARE.
 
 package de.amr.routeplanner.model;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,6 +51,8 @@ public class RoutePlanner {
 
 	public RoutePlanner(RoadMap map) {
 		this.map = Objects.requireNonNull(map);
+		cost = Collections.emptyMap();
+		parent = Collections.emptyMap();
 	}
 
 	public float cost(RoadMapLocation location) {
