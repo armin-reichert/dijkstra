@@ -213,11 +213,18 @@ public class RoutePlannerWindow extends JFrame {
 
 	private void onRepaint(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		drawHelpText(g);
 		drawRoads(g);
 		drawRoute(g);
 		drawStartAndGoalLocations(g);
 		drawMouseCoord(g);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+	}
+
+	private void drawHelpText(Graphics2D g) {
+		g.setFont(new Font(Font.DIALOG, Font.BOLD, 12));
+		g.setColor(Color.GRAY);
+		g.drawString("Click near city to set start, Shift-CLICK to set goal", 20, 20);
 	}
 
 	private void drawMouseCoord(Graphics2D g) {
