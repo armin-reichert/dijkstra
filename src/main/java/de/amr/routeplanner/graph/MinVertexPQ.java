@@ -64,13 +64,13 @@ public class MinVertexPQ {
 		remove(v);
 		vertexCost.put(v, cost);
 		q.add(v);
-		LOGGER.trace(() -> "Added: %s (cost=%.1f)".formatted(v, cost(v)));
+		LOGGER.trace(() -> "Add: %s (cost=%.1f)".formatted(v, cost(v)));
 	}
 
 	private void remove(Vertex v) {
 		boolean removed = q.remove(v);
 		if (removed) {
-			LOGGER.trace(() -> "Removed: %s (cost=%.1f)".formatted(v, cost(v)));
+			LOGGER.trace(() -> "Remove: %s (cost=%.1f)".formatted(v, cost(v)));
 		}
 	}
 }
