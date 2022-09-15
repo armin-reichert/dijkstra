@@ -31,7 +31,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.amr.routeplanner.graph.Queue;
+import de.amr.routeplanner.graph.MinVertexPQ;
 import de.amr.routeplanner.graph.Vertex;
 
 /**
@@ -44,15 +44,15 @@ public class RoutePlanner {
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private final RoadMap map;
-	private Queue q;
+	private MinVertexPQ q;
 	private Vertex startLocation;
 
 	public RoutePlanner(RoadMap map) {
 		this.map = Objects.requireNonNull(map);
-		q = new Queue();
+		q = new MinVertexPQ();
 	}
 
-	public float cost(RoadMapLocation v) {
+	public float cost(Vertex v) {
 		return q.cost(v);
 	}
 
@@ -87,25 +87,29 @@ public class RoutePlanner {
 	 */
 	private void dijkstra() {
 		map.vertices().forEach(v -> v.setParent(null));
-		q = new Queue();
+		q = new MinVertexPQ();
 		q.update(startLocation, 0);
 		while (!q.isEmpty()) {
 			var u = q.extractMinCostVertex();
 			u.outgoingEdges().forEach(edge -> {
-				var v = edge.to(); // edge = (u, v)
 				// TODO: need check if v has already been visited?
-				var altCost = q.cost(u) + edge.cost();
-				if (altCost < q.cost(v)) {
-					if (q.cost(v) == Float.POSITIVE_INFINITY) {
-						LOGGER.trace("First path to %s: cost=%.1f parent=%s".formatted(v, altCost, u));
-					} else {
-						LOGGER.trace("Cheaper path to %s: cost=%.1f (was: %.1f) parent=%s (was: %s)".formatted(v, altCost,
-								q.cost(v), u, v.getParent()));
-					}
+				var v = edge.to(); // edge = (u, v)
+				var altCost = cost(u) + edge.cost();
+				if (altCost < cost(v)) {
+					onPathUpdated(u, v, cost(v), altCost);
 					q.update(v, altCost);
 					v.setParent(u);
 				}
 			});
+		}
+	}
+
+	private void onPathUpdated(Vertex u, Vertex v, float oldCost, float newCost) {
+		if (oldCost == Float.POSITIVE_INFINITY) {
+			LOGGER.trace(() -> "Found path to %s (cost=%.1f) coming from %s".formatted(v, newCost, u));
+		} else {
+			LOGGER.trace(() -> "Improved path to %s (cost=%.1f, was: %.1f) coming from  %s (was: %s)".formatted(v, newCost,
+					oldCost, u, v.getParent()));
 		}
 	}
 }

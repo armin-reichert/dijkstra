@@ -34,14 +34,14 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Armin Reichert
  */
-public class Queue {
+public class MinVertexPQ {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private PriorityQueue<Vertex> q;
 	private Map<Vertex, Float> vertexCost;
 
-	public Queue() {
+	public MinVertexPQ() {
 		q = new PriorityQueue<>((u, v) -> Float.compare(cost(u), cost(v)));
 		vertexCost = new HashMap<>();
 	}
