@@ -24,16 +24,15 @@ SOFTWARE.
 
 package de.amr.routeplanner.model;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.PriorityQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import de.amr.routeplanner.graph.Queue;
+import de.amr.routeplanner.graph.Vertex;
 
 /**
  * @author Armin Reichert
@@ -45,18 +44,16 @@ public class RoutePlanner {
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private final RoadMap map;
-	private Map<RoadMapLocation, Float> cost;
-	private Map<RoadMapLocation, RoadMapLocation> parent;
-	private RoadMapLocation startLocation;
+	private Queue q;
+	private Vertex startLocation;
 
 	public RoutePlanner(RoadMap map) {
 		this.map = Objects.requireNonNull(map);
-		cost = Collections.emptyMap();
-		parent = Collections.emptyMap();
+		q = new Queue();
 	}
 
-	public float cost(RoadMapLocation location) {
-		return cost.getOrDefault(location, Float.POSITIVE_INFINITY);
+	public float cost(RoadMapLocation v) {
+		return q.cost(v);
 	}
 
 	public List<RoadMapLocation> computeRoute(String startName, String goalName) {
@@ -71,7 +68,7 @@ public class RoutePlanner {
 		}
 		if (start != startLocation) {
 			startLocation = start;
-			LOGGER.info(() -> "Compute shortest paths starting at %s".formatted(startLocation));
+			LOGGER.info(() -> "*** Compute shortest paths starting at %s".formatted(startLocation));
 			dijkstra();
 		}
 		return buildRoute(goal);
@@ -79,7 +76,7 @@ public class RoutePlanner {
 
 	private List<RoadMapLocation> buildRoute(RoadMapLocation goal) {
 		var route = new LinkedList<RoadMapLocation>();
-		for (RoadMapLocation v = goal; v != null; v = parent.get(v)) {
+		for (RoadMapLocation v = goal; v != null; v = (RoadMapLocation) v.getParent()) {
 			route.addFirst(v);
 		}
 		return route;
@@ -89,32 +86,24 @@ public class RoutePlanner {
 	 * Computes the shortest path from the given start vertex to all vertices using the Dijkstra algorithm.
 	 */
 	private void dijkstra() {
-		var q = new PriorityQueue<RoadMapLocation>((loc1, loc2) -> Float.compare(cost(loc1), cost(loc2)));
-		parent = new HashMap<>();
-		cost = new HashMap<>();
-		cost.put(startLocation, 0.0f);
-		q.add(startLocation);
+		map.vertices().forEach(v -> v.setParent(null));
+		q = new Queue();
+		q.update(startLocation, 0);
 		while (!q.isEmpty()) {
-			var u = q.poll(); // extract min cost vertex from queue
+			var u = q.extractMinCostVertex();
 			u.outgoingEdges().forEach(edge -> {
-				var v = (RoadMapLocation) edge.to(); // edge = (u, v)
-				var altCost = cost(u) + edge.cost();
-				if (altCost < cost(v)) {
-					if (cost(v) == Float.POSITIVE_INFINITY) {
-						LOGGER.trace("Found first path to %s: cost=%.1f parent=%s".formatted(v, altCost, u));
+				var v = edge.to(); // edge = (u, v)
+				// TODO: need check if v has already been visited?
+				var altCost = q.cost(u) + edge.cost();
+				if (altCost < q.cost(v)) {
+					if (q.cost(v) == Float.POSITIVE_INFINITY) {
+						LOGGER.trace("First path to %s: cost=%.1f parent=%s".formatted(v, altCost, u));
 					} else {
-						LOGGER.trace("Found cheaper path to %s: cost=%.1f (was: %.1f) parent=%s (was: %s)".formatted(v, altCost,
-								cost(v), u, parent.get(v)));
+						LOGGER.trace("Cheaper path to %s: cost=%.1f (was: %.1f) parent=%s (was: %s)".formatted(v, altCost,
+								q.cost(v), u, v.getParent()));
 					}
-					// "decrease key" is not supported by Java priority queue, use remove/add instead
-					boolean removed = q.remove(v);
-					if (removed) {
-						LOGGER.trace("Removed from PQ: %s (cost=%.1f)".formatted(v, cost(v)));
-					}
-					cost.put(v, altCost);
-					parent.put(v, u);
-					q.add(v);
-					LOGGER.trace("Added to PQ: %s (cost=%.1f)".formatted(v, cost(v)));
+					q.update(v, altCost);
+					v.setParent(u);
 				}
 			});
 		}

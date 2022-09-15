@@ -24,34 +24,53 @@ SOFTWARE.
 
 package de.amr.routeplanner.graph;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Armin Reichert
  */
-public class Vertex {
+public class Queue {
 
-	private List<Edge> adjEdges;
-	private Vertex parent;
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	public Vertex getParent() {
-		return parent;
+	private PriorityQueue<Vertex> q;
+	private Map<Vertex, Float> vertexCost;
+
+	public Queue() {
+		q = new PriorityQueue<>((u, v) -> Float.compare(cost(u), cost(v)));
+		vertexCost = new HashMap<>();
 	}
 
-	public void setParent(Vertex parent) {
-		this.parent = parent;
+	public float cost(Vertex location) {
+		return vertexCost.getOrDefault(location, Float.POSITIVE_INFINITY);
 	}
 
-	public void addEdge(Vertex to, float cost) {
-		if (adjEdges == null) {
-			adjEdges = new ArrayList<>(3);
+	public boolean isEmpty() {
+		return q.isEmpty();
+	}
+
+	public Vertex extractMinCostVertex() {
+		var min = q.poll();
+		LOGGER.trace(() -> "Extract min: %s (cost=%.1f)".formatted(min, cost(min)));
+		return min;
+	}
+
+	public void update(Vertex v, float cost) {
+		remove(v);
+		vertexCost.put(v, cost);
+		q.add(v);
+		LOGGER.trace(() -> "Added: %s (cost=%.1f)".formatted(v, cost(v)));
+	}
+
+	private void remove(Vertex v) {
+		boolean removed = q.remove(v);
+		if (removed) {
+			LOGGER.trace(() -> "Removed: %s (cost=%.1f)".formatted(v, cost(v)));
 		}
-		adjEdges.add(new Edge(this, to, cost));
-	}
-
-	public Stream<Edge> outgoingEdges() {
-		return adjEdges == null ? Stream.empty() : adjEdges.stream();
 	}
 }
