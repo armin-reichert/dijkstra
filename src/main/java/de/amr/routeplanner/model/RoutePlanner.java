@@ -106,10 +106,10 @@ public class RoutePlanner {
 
 	private void onPathUpdated(Vertex u, Vertex v, float oldCost, float newCost) {
 		if (oldCost == Float.POSITIVE_INFINITY) {
-			LOGGER.trace(() -> "Found path to %s (cost=%.1f) coming from %s".formatted(v, newCost, u));
+			LOGGER.trace(() -> "Found path to %s (%.1f km) via %s".formatted(v, newCost, u));
 		} else {
-			LOGGER.trace(() -> "Improved path to %s (cost=%.1f, was: %.1f) coming from  %s (was: %s)".formatted(v, newCost,
-					oldCost, u, v.getParent()));
+			LOGGER.trace(() -> "Found shorter path to %s (%.1f km instead of %.1f km) via %s instead via %s".formatted(v,
+					newCost, oldCost, u, v.getParent()));
 		}
 	}
 }
