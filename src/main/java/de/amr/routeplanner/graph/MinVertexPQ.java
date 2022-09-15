@@ -46,8 +46,8 @@ public class MinVertexPQ {
 		vertexCost = new HashMap<>();
 	}
 
-	public float cost(Vertex location) {
-		return vertexCost.getOrDefault(location, Float.POSITIVE_INFINITY);
+	public float cost(Vertex v) {
+		return vertexCost.getOrDefault(v, Float.POSITIVE_INFINITY);
 	}
 
 	public boolean isEmpty() {
