@@ -32,7 +32,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.routeplanner.graph.MinVertexPQ;
-import de.amr.routeplanner.graph.Vertex;
 
 /**
  * @author Armin Reichert
@@ -44,16 +43,16 @@ public class RoutePlanner {
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private final RoadMap map;
-	private MinVertexPQ q;
-	private Vertex startLocation;
+	private MinVertexPQ<RoadMapLocation> q;
+	private RoadMapLocation startLocation;
 
 	public RoutePlanner(RoadMap map) {
 		this.map = Objects.requireNonNull(map);
-		q = new MinVertexPQ();
+		q = new MinVertexPQ<>();
 	}
 
-	public float cost(Vertex v) {
-		return q.cost(v);
+	public float cost(RoadMapLocation loc) {
+		return q.cost(loc);
 	}
 
 	public List<RoadMapLocation> computeRoute(String startName, String goalName) {
@@ -87,13 +86,13 @@ public class RoutePlanner {
 	 */
 	private void dijkstra() {
 		map.vertices().forEach(v -> v.setParent(null));
-		q = new MinVertexPQ();
+		q = new MinVertexPQ<>();
 		q.update(startLocation, 0);
 		while (!q.isEmpty()) {
 			var u = q.extractMinCostVertex();
 			u.outgoingEdges().forEach(edge -> {
 				// TODO: need check if v has already been visited?
-				var v = edge.to(); // edge = (u, v)
+				var v = (RoadMapLocation) edge.to(); // edge = (u, v)
 				var altCost = cost(u) + edge.cost();
 				if (altCost < cost(v)) {
 					onPathUpdated(u, v, cost(v), altCost);
@@ -104,7 +103,7 @@ public class RoutePlanner {
 		}
 	}
 
-	private void onPathUpdated(Vertex u, Vertex v, float oldCost, float newCost) {
+	private void onPathUpdated(RoadMapLocation u, RoadMapLocation v, float oldCost, float newCost) {
 		if (oldCost == Float.POSITIVE_INFINITY) {
 			LOGGER.trace(() -> "Found path to %s (%.1f km) via %s".formatted(v, newCost, u));
 		} else {

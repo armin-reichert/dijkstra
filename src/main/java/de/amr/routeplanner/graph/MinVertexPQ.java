@@ -34,11 +34,11 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Armin Reichert
  */
-public class MinVertexPQ {
+public class MinVertexPQ<V extends Vertex> {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private PriorityQueue<Vertex> q;
+	private PriorityQueue<V> q;
 	private Map<Vertex, Float> vertexCost;
 
 	public MinVertexPQ() {
@@ -46,7 +46,7 @@ public class MinVertexPQ {
 		vertexCost = new HashMap<>();
 	}
 
-	public float cost(Vertex v) {
+	public float cost(V v) {
 		return vertexCost.getOrDefault(v, Float.POSITIVE_INFINITY);
 	}
 
@@ -54,20 +54,20 @@ public class MinVertexPQ {
 		return q.isEmpty();
 	}
 
-	public Vertex extractMinCostVertex() {
+	public V extractMinCostVertex() {
 		var min = q.poll();
 		LOGGER.trace(() -> "Extract min: %s (cost=%.1f)".formatted(min, cost(min)));
 		return min;
 	}
 
-	public void update(Vertex v, float cost) {
+	public void update(V v, float cost) {
 		remove(v);
 		vertexCost.put(v, cost);
 		q.add(v);
 		LOGGER.trace(() -> "Add: %s (cost=%.1f)".formatted(v, cost(v)));
 	}
 
-	private void remove(Vertex v) {
+	private void remove(V v) {
 		boolean removed = q.remove(v);
 		if (removed) {
 			LOGGER.trace(() -> "Remove: %s (cost=%.1f)".formatted(v, cost(v)));
