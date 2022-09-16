@@ -89,7 +89,7 @@ public class RoutePlanner {
 				visited.add(u);
 				u.outgoingEdges().forEach(edge -> {
 					var v = (RoadMapLocation) edge.to(); // edge = (u, v)
-					var altCost = cost(u) + edge.cost(); // cost of path (startLocation, ..., u, v)
+					var altCost = cost(u) + edge.cost(); // cost of path (source, ..., u, v)
 					if (cost(v) > altCost) {
 						tracePathUpdated(u, v, cost(v), altCost);
 						q.update(v, altCost);
