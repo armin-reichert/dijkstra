@@ -45,7 +45,7 @@ public class RoutePlanner {
 
 	private final RoadMap map;
 	private MinVertexPQ<RoadMapLocation> q;
-	private RoadMapLocation startLocation;
+	private RoadMapLocation source;
 
 	public RoutePlanner(RoadMap map) {
 		this.map = Objects.requireNonNull(map);
@@ -56,49 +56,40 @@ public class RoutePlanner {
 		return q.cost(loc);
 	}
 
-	public List<RoadMapLocation> computeRoute(String startName, String goalName) {
-		var start = (RoadMapLocation) map.vertex(startName).orElse(null);
-		var goal = (RoadMapLocation) map.vertex(goalName).orElse(null);
-		return computeRoute(start, goal);
+	public List<RoadMapLocation> computeRoute(String sourceName, String goalName) {
+		return computeRoute((RoadMapLocation) map.vertex(sourceName).orElse(null),
+				(RoadMapLocation) map.vertex(goalName).orElse(null));
 	}
 
-	public List<RoadMapLocation> computeRoute(RoadMapLocation start, RoadMapLocation goal) {
-		if (start == null || goal == null) {
+	public List<RoadMapLocation> computeRoute(RoadMapLocation source, RoadMapLocation goal) {
+		if (source == null || goal == null) {
 			return List.of();
 		}
-		if (start != startLocation) {
-			startLocation = start;
-			LOGGER.info(() -> "*** Compute shortest paths starting at %s".formatted(startLocation));
+		if (source != this.source) {
+			this.source = source;
 			dijkstra();
 		}
 		return buildRoute(goal);
 	}
 
-	private List<RoadMapLocation> buildRoute(RoadMapLocation goal) {
-		var route = new LinkedList<RoadMapLocation>();
-		for (RoadMapLocation v = goal; v != null; v = (RoadMapLocation) v.getParent()) {
-			route.addFirst(v);
-		}
-		return route;
-	}
-
 	/**
-	 * Computes the shortest path from the given start vertex to all vertices using the Dijkstra algorithm.
+	 * Computes the shortest path from the current source to all locations of the map.
 	 * 
-	 * TODO: not sure if visited set is really needed
+	 * TODO: I am not sure if the "visited" set is really needed
 	 */
 	private void dijkstra() {
+		LOGGER.info(() -> "*** Compute all shortest paths from %s using Dijkstra's algorithm".formatted(source));
 		var visited = new HashSet<RoadMapLocation>();
 		map.vertices().forEach(v -> v.setParent(null));
 		q = new MinVertexPQ<>();
-		q.update(startLocation, 0);
+		q.update(source, 0);
 		while (!q.isEmpty()) {
 			var u = q.extractMinCostVertex();
 			if (!visited.contains(u)) {
 				visited.add(u);
 				u.outgoingEdges().forEach(edge -> {
 					var v = (RoadMapLocation) edge.to(); // edge = (u, v)
-					var altCost = cost(u) + edge.cost(); // cost of alternative path using edge (u, v)
+					var altCost = cost(u) + edge.cost(); // cost of path (startLocation, ..., u, v)
 					if (cost(v) > altCost) {
 						tracePathUpdated(u, v, cost(v), altCost);
 						q.update(v, altCost);
@@ -107,6 +98,14 @@ public class RoutePlanner {
 				});
 			}
 		}
+	}
+
+	private List<RoadMapLocation> buildRoute(RoadMapLocation goal) {
+		var route = new LinkedList<RoadMapLocation>();
+		for (RoadMapLocation v = goal; v != null; v = (RoadMapLocation) v.getParent()) {
+			route.addFirst(v);
+		}
+		return route;
 	}
 
 	private void tracePathUpdated(RoadMapLocation u, RoadMapLocation v, float oldCost, float newCost) {
