@@ -98,9 +98,9 @@ public class RoutePlanner {
 				visited.add(u);
 				u.outgoingEdges().forEach(edge -> {
 					var v = (RoadMapLocation) edge.to(); // edge = (u, v)
-					var altCost = cost(u) + edge.cost();
-					if (altCost < cost(v)) {
-						onPathUpdated(u, v, cost(v), altCost);
+					var altCost = cost(u) + edge.cost(); // cost of alternative path using edge (u, v)
+					if (cost(v) > altCost) {
+						tracePathUpdated(u, v, cost(v), altCost);
 						q.update(v, altCost);
 						v.setParent(u);
 					}
@@ -109,7 +109,7 @@ public class RoutePlanner {
 		}
 	}
 
-	private void onPathUpdated(RoadMapLocation u, RoadMapLocation v, float oldCost, float newCost) {
+	private void tracePathUpdated(RoadMapLocation u, RoadMapLocation v, float oldCost, float newCost) {
 		if (oldCost == Float.POSITIVE_INFINITY) {
 			LOGGER.trace(() -> "Found path to %s (%.1f km) via %s".formatted(v, newCost, u));
 		} else {
