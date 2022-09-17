@@ -44,7 +44,7 @@ public class Vertex {
 		this.parent = parent;
 	}
 
-	public void addEdge(Vertex to, float cost) {
+	public void addOutgoingEdge(Vertex to, float cost) {
 		if (adjEdges == null) {
 			adjEdges = new ArrayList<>(3);
 		}

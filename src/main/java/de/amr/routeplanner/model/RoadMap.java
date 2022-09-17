@@ -41,13 +41,13 @@ public class RoadMap extends Graph<String, RoadMapPoint> {
 		return u.location().name().compareTo(v.location().name());
 	}
 
-	public RoadMapPoint getOrCreatePoint(String key, float latitude, float longitude) {
-		var v = vertex(key);
+	public RoadMapPoint getOrCreatePoint(String name, float latitude, float longitude) {
+		var v = vertex(name);
 		if (v.isPresent()) {
 			return v.get();
 		}
-		var p = new RoadMapPoint(key, latitude, longitude);
-		addVertex(key, p);
+		var p = new RoadMapPoint(name, latitude, longitude);
+		addVertex(name, p);
 		return p;
 	}
 

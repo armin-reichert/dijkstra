@@ -64,6 +64,6 @@ public class Graph<K, V extends Vertex> {
 	}
 
 	public void addDirectedEdge(V source, V target, float cost) {
-		source.addEdge(target, cost);
+		source.addOutgoingEdge(target, cost);
 	}
 }
