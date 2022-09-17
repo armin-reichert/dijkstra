@@ -24,7 +24,6 @@ SOFTWARE.
 
 package de.amr.routeplanner.model;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -70,21 +69,21 @@ public class RoutePlanner {
 	/**
 	 * Computes the shortest path from the current source to all locations of the map.
 	 * 
-	 * TODO: I am not sure if the "visited" set is really needed
+	 * TODO: I am not sure if using "visited" is really needed
 	 */
 	private void dijkstra() {
 		LOGGER.info(() -> "*** Compute all shortest paths from %s using Dijkstra's algorithm".formatted(source));
-		var visited = new HashSet<RoadMapPoint>();
 		map.vertices().forEach(v -> {
 			v.setCost(Float.POSITIVE_INFINITY);
 			v.setParent(null);
+			v.setVisited(false);
 		});
 		q = new MinVertexPQ<>();
 		q.update(source, 0);
 		while (!q.isEmpty()) {
 			var u = q.extractMinCostVertex();
-			if (!visited.contains(u)) {
-				visited.add(u);
+			if (!u.isVisited()) {
+				u.setVisited(true);
 				u.outgoingEdges().forEach(edge -> {
 					var v = (RoadMapPoint) edge.to(); // edge = (u, v)
 					var altCost = u.getCost() + edge.cost(); // cost of path (source, ..., u, v)

@@ -36,33 +36,29 @@ public class MinVertexPQ<V extends Vertex> {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private PriorityQueue<V> q;
+	private PriorityQueue<V> pq;
 
 	public MinVertexPQ() {
-		q = new PriorityQueue<>((u, v) -> Float.compare(u.getCost(), v.getCost()));
+		pq = new PriorityQueue<>((u, v) -> Float.compare(u.getCost(), v.getCost()));
 	}
 
 	public boolean isEmpty() {
-		return q.isEmpty();
+		return pq.isEmpty();
 	}
 
 	public V extractMinCostVertex() {
-		var min = q.poll();
+		var min = pq.poll();
 		LOGGER.trace(() -> "Extract min: %s (cost=%.1f)".formatted(min, min.getCost()));
 		return min;
 	}
 
 	public void update(V v, float cost) {
-		remove(v);
-		v.setCost(cost);
-		q.add(v);
-		LOGGER.trace(() -> "Add: %s (cost=%.1f)".formatted(v, v.getCost()));
-	}
-
-	private void remove(V v) {
-		boolean removed = q.remove(v);
+		boolean removed = pq.remove(v);
 		if (removed) {
 			LOGGER.trace(() -> "Remove: %s (cost=%.1f)".formatted(v, v.getCost()));
 		}
+		v.setCost(cost);
+		pq.add(v);
+		LOGGER.trace(() -> "Add: %s (cost=%.1f)".formatted(v, v.getCost()));
 	}
 }
