@@ -35,7 +35,7 @@ import de.amr.routeplanner.graph.Vertex;
 /**
  * @author Armin Reichert
  */
-public class RoadMap extends Graph<String> {
+public class RoadMap extends Graph<String, RoadMapPoint> {
 
 	public static int orderByLocationName(RoadMapPoint u, RoadMapPoint v) {
 		return u.location().name().compareTo(v.location().name());
@@ -44,7 +44,7 @@ public class RoadMap extends Graph<String> {
 	public RoadMapPoint getOrCreatePoint(String key, float latitude, float longitude) {
 		var v = vertex(key);
 		if (v.isPresent()) {
-			return (RoadMapPoint) v.get();
+			return v.get();
 		}
 		var p = new RoadMapPoint(key, latitude, longitude);
 		addVertex(key, p);

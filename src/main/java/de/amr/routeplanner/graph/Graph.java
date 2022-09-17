@@ -32,24 +32,25 @@ import java.util.stream.Stream;
 /**
  * @author Armin Reichert
  * 
- * @param K type of keys for referencing vertices
+ * @param K type of keys for identifying vertices
+ * @param V vertex class (subclass of {@link Vertex})
  */
-public class Graph<K> {
+public class Graph<K, V extends Vertex> {
 
-	private final Map<K, Vertex> vertexByKey = new HashMap<>();
+	private final Map<K, V> vertexByKey = new HashMap<>();
 
-	public void addVertex(K key, Vertex vertex) {
+	public void addVertex(K key, V vertex) {
 		if (vertexByKey.containsKey(key)) {
 			throw new IllegalArgumentException("Vertex with key '" + key + "' already exists.");
 		}
 		vertexByKey.put(key, vertex);
 	}
 
-	public Optional<Vertex> vertex(K key) {
+	public Optional<V> vertex(K key) {
 		return Optional.ofNullable(vertexByKey.get(key));
 	}
 
-	public Stream<Vertex> vertices() {
+	public Stream<V> vertices() {
 		return vertexByKey.values().stream();
 	}
 
@@ -57,12 +58,12 @@ public class Graph<K> {
 		return vertices().flatMap(Vertex::outgoingEdges);
 	}
 
-	public void addEdge(Vertex either, Vertex other, float cost) {
+	public void addEdge(V either, V other, float cost) {
 		addDirectedEdge(either, other, cost);
 		addDirectedEdge(other, either, cost);
 	}
 
-	public void addDirectedEdge(Vertex source, Vertex target, float cost) {
+	public void addDirectedEdge(V source, V target, float cost) {
 		source.addEdge(target, cost);
 	}
 }
