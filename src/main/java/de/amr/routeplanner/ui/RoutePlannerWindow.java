@@ -78,7 +78,7 @@ public class RoutePlannerWindow extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			String start = (String) comboStart().getSelectedItem();
 			String goal = (String) comboGoal().getSelectedItem();
-			var route = routePlanner.computeRoute(start, goal);
+			var route = routePlanner.computeRoute(map, start, goal);
 			var sections = route.stream().map(p -> "%s %.1f km".formatted(p.location().name(), p.getCost())).toList();
 			var data = new DefaultListModel<String>();
 			data.addAll(sections);
@@ -87,8 +87,8 @@ public class RoutePlannerWindow extends JFrame {
 		}
 	};
 
+	private final RoutePlanner routePlanner = new RoutePlanner();
 	private RoadMap map;
-	private RoutePlanner routePlanner;
 	private JComboBox<String> comboStart;
 	private JComboBox<String> comboGoal;
 	private JList<String> listRoute;
@@ -168,7 +168,6 @@ public class RoutePlannerWindow extends JFrame {
 
 	public void setMap(RoadMap map) {
 		this.map = Objects.requireNonNull(map);
-		this.routePlanner = new RoutePlanner(map);
 		var locationNames = map.pointNames().toList();
 		if (!locationNames.isEmpty()) {
 			comboStart().setSelectedItem(locationNames.get(0));
@@ -259,7 +258,7 @@ public class RoutePlannerWindow extends JFrame {
 	public void drawRoute(Graphics2D g) {
 		String start = (String) comboStart().getSelectedItem();
 		String goal = (String) comboGoal().getSelectedItem();
-		var route = routePlanner.computeRoute(start, goal);
+		var route = routePlanner.computeRoute(map, start, goal);
 		g.setColor(Color.RED);
 		g.setStroke(new BasicStroke(1f));
 		for (int i = 0; i < route.size(); ++i) {

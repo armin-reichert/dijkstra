@@ -26,7 +26,6 @@ package de.amr.routeplanner.model;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 import de.amr.routeplanner.graph.PathFinder;
 
@@ -37,18 +36,13 @@ import de.amr.routeplanner.graph.PathFinder;
  */
 public class RoutePlanner {
 
-	private final RoadMap map;
 	private RoadMapPoint source;
 
-	public RoutePlanner(RoadMap map) {
-		this.map = Objects.requireNonNull(map);
+	public List<RoadMapPoint> computeRoute(RoadMap map, String sourceName, String goalName) {
+		return computeRoute(map, map.vertex(sourceName).orElse(null), map.vertex(goalName).orElse(null));
 	}
 
-	public List<RoadMapPoint> computeRoute(String sourceName, String goalName) {
-		return computeRoute(map.vertex(sourceName).orElse(null), map.vertex(goalName).orElse(null));
-	}
-
-	public List<RoadMapPoint> computeRoute(RoadMapPoint source, RoadMapPoint goal) {
+	public List<RoadMapPoint> computeRoute(RoadMap map, RoadMapPoint source, RoadMapPoint goal) {
 		if (source == null || goal == null) {
 			return List.of();
 		}
@@ -56,10 +50,6 @@ public class RoutePlanner {
 			this.source = source;
 			PathFinder.dijkstra(map, source);
 		}
-		return buildRoute(goal);
-	}
-
-	private List<RoadMapPoint> buildRoute(RoadMapPoint goal) {
 		var route = new LinkedList<RoadMapPoint>();
 		for (RoadMapPoint v = goal; v != null; v = (RoadMapPoint) v.getParent()) {
 			route.addFirst(v);

@@ -92,11 +92,11 @@ public class RoutePlannerApp {
 
 	private void printAllRoutes() {
 		map.print(LOGGER::info, RoadMap::orderByLocationName);
-		var routePlanner = new RoutePlanner(map);
+		var routePlanner = new RoutePlanner();
 		var locationNames = map.pointNames().toArray(String[]::new);
 		for (var start : locationNames) {
 			for (var goal : locationNames) {
-				var route = routePlanner.computeRoute(start, goal);
+				var route = routePlanner.computeRoute(map, start, goal);
 				LOGGER.info(() -> "%s nach %s: %s".formatted(start, goal, toStringList(route)));
 			}
 		}
