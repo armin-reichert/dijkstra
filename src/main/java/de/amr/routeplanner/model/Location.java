@@ -29,4 +29,9 @@ package de.amr.routeplanner.model;
  *
  */
 public record Location(String name, GeoCoord coord) {
+
+	@Override
+	public String toString() {
+		return "[%s %.3f %.3f]".formatted(name, coord.latitude(), coord.longitude());
+	}
 }
