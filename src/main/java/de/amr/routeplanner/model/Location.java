@@ -24,31 +24,9 @@ SOFTWARE.
 
 package de.amr.routeplanner.model;
 
-import de.amr.routeplanner.graph.Vertex;
-
 /**
  * @author Armin Reichert
+ *
  */
-public class RoadMapLocation extends Vertex {
-
-	private final String name;
-	private final GeoCoord coord;
-
-	public RoadMapLocation(String name, float latitude, float longitude) {
-		this.name = name;
-		coord = new GeoCoord(latitude, longitude);
-	}
-
-	public String name() {
-		return name;
-	}
-
-	public GeoCoord coord() {
-		return coord;
-	}
-
-	@Override
-	public String toString() {
-		return "[%s %.3f %.3f]".formatted(name, coord.latitude(), coord.longitude());
-	}
+public record Location(String name, GeoCoord coord) {
 }

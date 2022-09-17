@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import de.amr.routeplanner.graph.Edge;
 import de.amr.routeplanner.graph.Graph;
 import de.amr.routeplanner.graph.Vertex;
 
@@ -36,41 +37,43 @@ import de.amr.routeplanner.graph.Vertex;
  */
 public class RoadMap extends Graph<String> {
 
-	public static int orderByName(RoadMapLocation v1, RoadMapLocation v2) {
-		return v1.name().compareTo(v2.name());
+	public static int orderByLocationName(RoadMapPoint u, RoadMapPoint v) {
+		return u.location().name().compareTo(v.location().name());
 	}
 
-	public RoadMapLocation getOrCreateLocation(String key, float latitude, float longitude) {
-		var location = vertex(key);
-		if (location.isPresent()) {
-			return (RoadMapLocation) location.get();
+	public RoadMapPoint getOrCreatePoint(String key, float latitude, float longitude) {
+		var v = vertex(key);
+		if (v.isPresent()) {
+			return (RoadMapPoint) v.get();
 		}
-		var newLocation = new RoadMapLocation(key, latitude, longitude);
-		addVertex(key, newLocation);
-		return newLocation;
+		var p = new RoadMapPoint(key, latitude, longitude);
+		addVertex(key, p);
+		return p;
 	}
 
-	public void addRoad(RoadMapLocation either, RoadMapLocation other, float cost) {
+	public void addConnection(RoadMapPoint either, RoadMapPoint other, float cost) {
 		addEdge(either, other, cost);
 	}
 
-	public Stream<RoadMapLocation> locations(Comparator<RoadMapLocation> order) {
-		return vertices().map(RoadMapLocation.class::cast).sorted(order);
+	public Stream<RoadMapPoint> points(Comparator<RoadMapPoint> order) {
+		return vertices().map(RoadMapPoint.class::cast).sorted(order);
 	}
 
-	public Stream<RoadMapLocation> locations() {
-		return locations(RoadMap::orderByName);
+	public Stream<RoadMapPoint> pointsOrderedByLocationName() {
+		return points(RoadMap::orderByLocationName);
 	}
 
-	public Stream<String> locationNames() {
-		return locations().map(RoadMapLocation::name);
+	public Stream<String> pointNames() {
+		return pointsOrderedByLocationName().map(RoadMapPoint::location).map(Location::name);
 	}
 
-	public void print(Consumer<String> destination, Comparator<RoadMapLocation> order) {
-		locations(order).map(RoadMapLocation::toString).forEach(destination::accept);
-		locations(order)
-				.flatMap(Vertex::outgoingEdges).map(edge -> "Edge[%s -> %s %.1f km]"
-						.formatted(((RoadMapLocation) edge.from()).name(), ((RoadMapLocation) edge.to()).name(), edge.cost()))
-				.forEach(destination::accept);
+	public void print(Consumer<String> destination, Comparator<RoadMapPoint> order) {
+		points(order).map(RoadMapPoint::toString).forEach(destination::accept);
+		points(order).flatMap(Vertex::outgoingEdges).map(this::formatEdge).forEach(destination::accept);
+	}
+
+	private String formatEdge(Edge edge) {
+		return "[%s -> %s %.1f km]".formatted(((RoadMapPoint) edge.from()).location().name(),
+				((RoadMapPoint) edge.to()).location().name(), edge.cost());
 	}
 }

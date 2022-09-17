@@ -25,6 +25,7 @@ SOFTWARE.
 package de.amr.routeplanner;
 
 import java.awt.event.ActionEvent;
+import java.util.List;
 import java.util.MissingResourceException;
 
 import javax.swing.AbstractAction;
@@ -39,6 +40,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.routeplanner.model.RoadMap;
+import de.amr.routeplanner.model.RoadMapPoint;
 import de.amr.routeplanner.model.RoadMapReader;
 import de.amr.routeplanner.model.RoutePlanner;
 import de.amr.routeplanner.ui.RoutePlannerWindow;
@@ -73,7 +75,7 @@ public class RoutePlannerApp {
 			e.printStackTrace();
 		}
 		var window = new RoutePlannerWindow();
-		var locationNames = map.locationNames().toArray(String[]::new);
+		var locationNames = map.pointNames().toArray(String[]::new);
 		window.comboStart().setModel(new DefaultComboBoxModel<>(locationNames));
 		window.comboGoal().setModel(new DefaultComboBoxModel<>(locationNames));
 		window.listRoute().setModel(new DefaultListModel<>());
@@ -89,16 +91,19 @@ public class RoutePlannerApp {
 	}
 
 	private void printAllRoutes() {
-		map.print(LOGGER::info, RoadMap::orderByName);
+		map.print(LOGGER::info, RoadMap::orderByLocationName);
 		var routePlanner = new RoutePlanner(map);
-		var locationNames = map.locationNames().toArray(String[]::new);
+		var locationNames = map.pointNames().toArray(String[]::new);
 		for (var start : locationNames) {
 			for (var goal : locationNames) {
 				var route = routePlanner.computeRoute(start, goal);
-				var routeDesc = route.stream().map(point -> "%s %.1f km".formatted(point.name(), routePlanner.cost(point)))
-						.toList();
-				LOGGER.info(() -> "%s nach %s: %s".formatted(start, goal, routeDesc));
+				LOGGER.info(() -> "%s nach %s: %s".formatted(start, goal, routeToString(routePlanner, route)));
 			}
 		}
+	}
+
+	private String routeToString(RoutePlanner routePlanner, List<RoadMapPoint> route) {
+		return route.stream().map(point -> "%s %.1f km".formatted(point.location().name(), routePlanner.cost(point)))
+				.toList().toString();
 	}
 }

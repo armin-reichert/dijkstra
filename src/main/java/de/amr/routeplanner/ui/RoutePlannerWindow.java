@@ -53,7 +53,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.routeplanner.model.GeoCoord;
 import de.amr.routeplanner.model.RoadMap;
-import de.amr.routeplanner.model.RoadMapLocation;
+import de.amr.routeplanner.model.RoadMapPoint;
 import de.amr.routeplanner.model.RoutePlanner;
 import net.miginfocom.swing.MigLayout;
 
@@ -79,8 +79,7 @@ public class RoutePlannerWindow extends JFrame {
 			String start = (String) comboStart().getSelectedItem();
 			String goal = (String) comboGoal().getSelectedItem();
 			var route = routePlanner.computeRoute(start, goal);
-			var sections = route.stream()
-					.map(location -> "%s %.1f km".formatted(location.name(), routePlanner.cost(location))).toList();
+			var sections = route.stream().map(p -> "%s %.1f km".formatted(p.location().name(), routePlanner.cost(p))).toList();
 			var data = new DefaultListModel<String>();
 			data.addAll(sections);
 			listRoute().setModel(data);
@@ -170,7 +169,7 @@ public class RoutePlannerWindow extends JFrame {
 	public void setMap(RoadMap map) {
 		this.map = Objects.requireNonNull(map);
 		this.routePlanner = new RoutePlanner(map);
-		var locationNames = map.locationNames().toList();
+		var locationNames = map.pointNames().toList();
 		if (!locationNames.isEmpty()) {
 			comboStart().setSelectedItem(locationNames.get(0));
 			comboGoal().setSelectedItem(locationNames.get(locationNames.size() - 1));
@@ -201,9 +200,9 @@ public class RoutePlannerWindow extends JFrame {
 		var nearest = getNearestLocation(coord, 50);
 		if (nearest != null) {
 			if (e.isShiftDown()) {
-				comboGoal().setSelectedItem(nearest.name());
+				comboGoal().setSelectedItem(nearest.location().name());
 			} else {
-				comboStart().setSelectedItem(nearest.name());
+				comboStart().setSelectedItem(nearest.location().name());
 			}
 		}
 		mousePosition = e.getPoint();
@@ -237,18 +236,19 @@ public class RoutePlannerWindow extends JFrame {
 	}
 
 	public void drawStartAndGoalLocations(Graphics2D g) {
-		RoadMapLocation nearestLocation = null;
+		RoadMapPoint nearest = null;
 		if (mousePosition != null) {
 			GeoCoord coord = getCoordAtPosition(mousePosition.x, mousePosition.y);
-			nearestLocation = getNearestLocation(coord, 50);
+			nearest = getNearestLocation(coord, 50);
 		}
-		for (var location : map.locations().toList()) {
-			Point p = getPointAtCoord(location.coord());
-			if (location.name().equals(comboStart().getSelectedItem())) {
+		for (var v : map.pointsOrderedByLocationName().toList()) {
+			Point p = getPointAtCoord(v.location().coord());
+			var key = v.location().name();
+			if (key.equals(comboStart().getSelectedItem())) {
 				circle(g, p, COLOR_START, 6);
-			} else if (location.name().equals(comboGoal().getSelectedItem())) {
+			} else if (key.equals(comboGoal().getSelectedItem())) {
 				circle(g, p, COLOR_GOAL, 6);
-			} else if (location == nearestLocation) {
+			} else if (v == nearest) {
 				circle(g, p, shiftPressed ? COLOR_GOAL : COLOR_START, 8);
 			} else {
 				circle(g, p, Color.BLACK, 3);
@@ -263,9 +263,9 @@ public class RoutePlannerWindow extends JFrame {
 		g.setColor(Color.RED);
 		g.setStroke(new BasicStroke(1f));
 		for (int i = 0; i < route.size(); ++i) {
-			var p = getPointAtCoord(route.get(i).coord());
+			var p = getPointAtCoord(route.get(i).location().coord());
 			if (i > 0) {
-				var q = getPointAtCoord(route.get(i - 1).coord());
+				var q = getPointAtCoord(route.get(i - 1).location().coord());
 				g.drawLine(p.x, p.y, q.x, q.y);
 			}
 		}
@@ -275,8 +275,8 @@ public class RoutePlannerWindow extends JFrame {
 		g.setColor(Color.DARK_GRAY);
 		g.setStroke(new BasicStroke(0.1f));
 		map.edges().forEach(road -> {
-			Point from = getPointAtCoord(((RoadMapLocation) road.from()).coord());
-			Point to = getPointAtCoord(((RoadMapLocation) road.to()).coord());
+			Point from = getPointAtCoord(((RoadMapPoint) road.from()).location().coord());
+			Point to = getPointAtCoord(((RoadMapPoint) road.to()).location().coord());
 			g.drawLine(from.x, from.y, to.x, to.y);
 		});
 	}
@@ -297,13 +297,13 @@ public class RoutePlannerWindow extends JFrame {
 		return new GeoCoord(latitude, longitude);
 	}
 
-	private RoadMapLocation getNearestLocation(GeoCoord coord, double range) {
+	private RoadMapPoint getNearestLocation(GeoCoord coord, double range) {
 		double minDist = Double.POSITIVE_INFINITY;
-		RoadMapLocation nearest = null;
-		for (var location : map.locations().toList()) {
-			double dist = distance(coord, location.coord());
+		RoadMapPoint nearest = null;
+		for (var v : map.pointsOrderedByLocationName().toList()) {
+			double dist = distance(coord, v.location().coord());
 			if (dist < minDist) {
-				nearest = location;
+				nearest = v;
 				minDist = dist;
 			}
 		}

@@ -55,7 +55,7 @@ public class RoadMapReader {
 	}
 
 	private final RoadMap map;
-	private final Map<String, RoadMapLocation> locationByName = new HashMap<>();
+	private final Map<String, RoadMapPoint> locationByName = new HashMap<>();
 	private int mode = MODE_SKIP;
 	private int lineNumber;
 
@@ -112,7 +112,7 @@ public class RoadMapReader {
 			LOGGER.error("Line %d: '%s': Invalid longitude: '%s'".formatted(lineNumber, line, tokens[3]));
 			return;
 		}
-		locationByName.put(key, map.getOrCreateLocation(name, latitude, longitude));
+		locationByName.put(key, map.getOrCreatePoint(name, latitude, longitude));
 	}
 
 	private void parseRoad(String line) {

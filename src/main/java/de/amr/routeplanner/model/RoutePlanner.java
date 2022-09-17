@@ -44,24 +44,24 @@ public class RoutePlanner {
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private final RoadMap map;
-	private MinVertexPQ<RoadMapLocation> q;
-	private RoadMapLocation source;
+	private MinVertexPQ<RoadMapPoint> q;
+	private RoadMapPoint source;
 
 	public RoutePlanner(RoadMap map) {
 		this.map = Objects.requireNonNull(map);
 		q = new MinVertexPQ<>();
 	}
 
-	public float cost(RoadMapLocation loc) {
+	public float cost(RoadMapPoint loc) {
 		return q.cost(loc);
 	}
 
-	public List<RoadMapLocation> computeRoute(String sourceName, String goalName) {
-		return computeRoute((RoadMapLocation) map.vertex(sourceName).orElse(null),
-				(RoadMapLocation) map.vertex(goalName).orElse(null));
+	public List<RoadMapPoint> computeRoute(String sourceName, String goalName) {
+		return computeRoute((RoadMapPoint) map.vertex(sourceName).orElse(null),
+				(RoadMapPoint) map.vertex(goalName).orElse(null));
 	}
 
-	public List<RoadMapLocation> computeRoute(RoadMapLocation source, RoadMapLocation goal) {
+	public List<RoadMapPoint> computeRoute(RoadMapPoint source, RoadMapPoint goal) {
 		if (source == null || goal == null) {
 			return List.of();
 		}
@@ -79,7 +79,7 @@ public class RoutePlanner {
 	 */
 	private void dijkstra() {
 		LOGGER.info(() -> "*** Compute all shortest paths from %s using Dijkstra's algorithm".formatted(source));
-		var visited = new HashSet<RoadMapLocation>();
+		var visited = new HashSet<RoadMapPoint>();
 		map.vertices().forEach(v -> v.setParent(null));
 		q = new MinVertexPQ<>();
 		q.update(source, 0);
@@ -88,7 +88,7 @@ public class RoutePlanner {
 			if (!visited.contains(u)) {
 				visited.add(u);
 				u.outgoingEdges().forEach(edge -> {
-					var v = (RoadMapLocation) edge.to(); // edge = (u, v)
+					var v = (RoadMapPoint) edge.to(); // edge = (u, v)
 					var altCost = cost(u) + edge.cost(); // cost of path (source, ..., u, v)
 					if (cost(v) > altCost) {
 						tracePathUpdated(u, v, cost(v), altCost);
@@ -100,15 +100,15 @@ public class RoutePlanner {
 		}
 	}
 
-	private List<RoadMapLocation> buildRoute(RoadMapLocation goal) {
-		var route = new LinkedList<RoadMapLocation>();
-		for (RoadMapLocation v = goal; v != null; v = (RoadMapLocation) v.getParent()) {
+	private List<RoadMapPoint> buildRoute(RoadMapPoint goal) {
+		var route = new LinkedList<RoadMapPoint>();
+		for (RoadMapPoint v = goal; v != null; v = (RoadMapPoint) v.getParent()) {
 			route.addFirst(v);
 		}
 		return route;
 	}
 
-	private void tracePathUpdated(RoadMapLocation u, RoadMapLocation v, float oldCost, float newCost) {
+	private void tracePathUpdated(RoadMapPoint u, RoadMapPoint v, float oldCost, float newCost) {
 		if (oldCost == Float.POSITIVE_INFINITY) {
 			LOGGER.trace(() -> "Found path to %s (%.1f km) via %s".formatted(v, newCost, u));
 		} else {
