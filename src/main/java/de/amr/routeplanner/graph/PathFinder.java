@@ -38,13 +38,13 @@ public class PathFinder {
 	}
 
 	/**
-	 * Computes the shortest path from the current source to all locations of the map.
+	 * Computes the shortest path from the current source to all vertices of the graph.
 	 * <p>
 	 * TODO: I am not sure if using "visited" is really needed
 	 */
-	public static void dijkstra(Graph<?, ?> map, Vertex source) {
-		LOGGER.info(() -> "*** Compute all shortest paths from %s using Dijkstra's algorithm".formatted(source));
-		map.vertices().forEach(v -> {
+	public static void dijkstra(Graph<?, ?> g, Vertex source) {
+		LOGGER.info(() -> "*** Compute shortest paths from %s using Dijkstra's algorithm".formatted(source));
+		g.vertices().forEach(v -> {
 			v.setCost(Float.POSITIVE_INFINITY);
 			v.setParent(null);
 			v.setVisited(false);
