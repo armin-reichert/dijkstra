@@ -42,7 +42,6 @@ import org.apache.logging.log4j.Logger;
 import de.amr.routeplanner.model.RoadMap;
 import de.amr.routeplanner.model.RoadMapPoint;
 import de.amr.routeplanner.model.RoadMapReader;
-import de.amr.routeplanner.model.RoutePlanner;
 import de.amr.routeplanner.ui.RoutePlannerWindow;
 
 /**
@@ -92,11 +91,10 @@ public class RoutePlannerApp {
 
 	private void printAllRoutes() {
 		map.print(LOGGER::info, RoadMap::orderByLocationName);
-		var routePlanner = new RoutePlanner();
 		var locationNames = map.pointNames().toArray(String[]::new);
 		for (var start : locationNames) {
 			for (var goal : locationNames) {
-				var route = routePlanner.computeRoute(map, start, goal);
+				var route = map.computeRoute(start, goal);
 				LOGGER.info(() -> "%s nach %s: %s".formatted(start, goal, toStringList(route)));
 			}
 		}

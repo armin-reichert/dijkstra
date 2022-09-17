@@ -54,7 +54,6 @@ import org.apache.logging.log4j.Logger;
 import de.amr.routeplanner.model.GeoCoord;
 import de.amr.routeplanner.model.RoadMap;
 import de.amr.routeplanner.model.RoadMapPoint;
-import de.amr.routeplanner.model.RoutePlanner;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -78,7 +77,7 @@ public class RoutePlannerWindow extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			String start = (String) comboStart().getSelectedItem();
 			String goal = (String) comboGoal().getSelectedItem();
-			var route = routePlanner.computeRoute(map, start, goal);
+			var route = map.computeRoute(start, goal);
 			var sections = route.stream().map(p -> "%s %.1f km".formatted(p.location().name(), p.getCost())).toList();
 			var data = new DefaultListModel<String>();
 			data.addAll(sections);
@@ -87,7 +86,6 @@ public class RoutePlannerWindow extends JFrame {
 		}
 	};
 
-	private final RoutePlanner routePlanner = new RoutePlanner();
 	private RoadMap map;
 	private JComboBox<String> comboStart;
 	private JComboBox<String> comboGoal;
@@ -258,7 +256,7 @@ public class RoutePlannerWindow extends JFrame {
 	public void drawRoute(Graphics2D g) {
 		String start = (String) comboStart().getSelectedItem();
 		String goal = (String) comboGoal().getSelectedItem();
-		var route = routePlanner.computeRoute(map, start, goal);
+		var route = map.computeRoute(start, goal);
 		g.setColor(Color.RED);
 		g.setStroke(new BasicStroke(1f));
 		for (int i = 0; i < route.size(); ++i) {

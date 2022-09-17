@@ -25,6 +25,8 @@ SOFTWARE.
 package de.amr.routeplanner.model;
 
 import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -39,6 +41,27 @@ public class RoadMap extends Graph<String, RoadMapPoint> {
 
 	public static int orderByLocationName(RoadMapPoint u, RoadMapPoint v) {
 		return u.location().name().compareTo(v.location().name());
+	}
+
+	private RoadMapPoint source;
+
+	public List<RoadMapPoint> computeRoute(String sourceName, String goalName) {
+		return computeRoute(vertex(sourceName).orElse(null), vertex(goalName).orElse(null));
+	}
+
+	public List<RoadMapPoint> computeRoute(RoadMapPoint source, RoadMapPoint goal) {
+		if (source == null || goal == null) {
+			return List.of();
+		}
+		if (source != this.source) {
+			this.source = source;
+			computeShortestPathsFrom(source);
+		}
+		var route = new LinkedList<RoadMapPoint>();
+		for (RoadMapPoint v = goal; v != null; v = (RoadMapPoint) v.getParent()) {
+			route.addFirst(v);
+		}
+		return route;
 	}
 
 	public RoadMapPoint getOrCreatePoint(String name, float latitude, float longitude) {
