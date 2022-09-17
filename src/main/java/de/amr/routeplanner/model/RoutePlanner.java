@@ -28,10 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import de.amr.routeplanner.graph.MinVertexPQ;
+import de.amr.routeplanner.graph.PathFinder;
 
 /**
  * @author Armin Reichert
@@ -40,15 +37,11 @@ import de.amr.routeplanner.graph.MinVertexPQ;
  */
 public class RoutePlanner {
 
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
-
 	private final RoadMap map;
-	private MinVertexPQ<RoadMapPoint> q;
 	private RoadMapPoint source;
 
 	public RoutePlanner(RoadMap map) {
 		this.map = Objects.requireNonNull(map);
-		q = new MinVertexPQ<>();
 	}
 
 	public List<RoadMapPoint> computeRoute(String sourceName, String goalName) {
@@ -61,40 +54,9 @@ public class RoutePlanner {
 		}
 		if (source != this.source) {
 			this.source = source;
-			dijkstra();
+			PathFinder.dijkstra(map, source);
 		}
 		return buildRoute(goal);
-	}
-
-	/**
-	 * Computes the shortest path from the current source to all locations of the map.
-	 * 
-	 * TODO: I am not sure if using "visited" is really needed
-	 */
-	private void dijkstra() {
-		LOGGER.info(() -> "*** Compute all shortest paths from %s using Dijkstra's algorithm".formatted(source));
-		map.vertices().forEach(v -> {
-			v.setCost(Float.POSITIVE_INFINITY);
-			v.setParent(null);
-			v.setVisited(false);
-		});
-		q = new MinVertexPQ<>();
-		q.update(source, 0);
-		while (!q.isEmpty()) {
-			var u = q.extractMinCostVertex();
-			if (!u.isVisited()) {
-				u.setVisited(true);
-				u.outgoingEdges().forEach(edge -> {
-					var v = (RoadMapPoint) edge.to(); // edge = (u, v)
-					var altCost = u.getCost() + edge.cost(); // cost of path (source, ..., u, v)
-					if (v.getCost() > altCost) {
-						tracePathUpdated(u, v, v.getCost(), altCost);
-						q.update(v, altCost);
-						v.setParent(u);
-					}
-				});
-			}
-		}
 	}
 
 	private List<RoadMapPoint> buildRoute(RoadMapPoint goal) {
@@ -103,14 +65,5 @@ public class RoutePlanner {
 			route.addFirst(v);
 		}
 		return route;
-	}
-
-	private void tracePathUpdated(RoadMapPoint u, RoadMapPoint v, float oldCost, float newCost) {
-		if (oldCost == Float.POSITIVE_INFINITY) {
-			LOGGER.trace(() -> "Found path to %s (%.1f km) via %s".formatted(v, newCost, u));
-		} else {
-			LOGGER.trace(() -> "Found shorter path to %s (%.1f km instead of %.1f km) via %s instead via %s".formatted(v,
-					newCost, oldCost, u, v.getParent()));
-		}
 	}
 }

@@ -10,10 +10,13 @@
 		<Root level="info">
 			<AppenderRef ref="Console" />
 		</Root>
-		<Logger name="de.amr.routeplanner.graph.MinVertexPQ" level="trace" additivity="false">
+		<Logger name="de.amr.routeplanner.graph.MinVertexPQ"
+			level="trace" additivity="false">
 			<AppenderRef ref="Console" />
 		</Logger>
-		<Logger name="de.amr.routeplanner.model.RoutePlanner" level="trace" additivity="false">
+		<Logger
+			name="de.amr.routeplanner.graph.PathFinder"
+			level="trace" additivity="false">
 			<AppenderRef ref="Console" />
 		</Logger>
 	</Loggers>
