@@ -38,9 +38,14 @@ public class PathFinder {
 	}
 
 	/**
-	 * Computes the shortest path from the current source to all vertices of the graph.
+	 * Computes the shortest path from the given source vertex to all vertices of the graph.
 	 * <p>
 	 * TODO: I am not sure if using "visited" is really needed
+	 * 
+	 * @see https://cs.au.dk/~gerth/papers/fun22.pdf
+	 * 
+	 * @param g      the graph
+	 * @param source the source vertex
 	 */
 	public static void dijkstra(Graph<?, ?> g, Vertex source) {
 		LOGGER.info(() -> "*** Compute shortest paths from %s using Dijkstra's algorithm".formatted(source));
@@ -59,7 +64,7 @@ public class PathFinder {
 					var v = edge.to(); // edge = (u, v)
 					var altCost = u.getCost() + edge.cost(); // cost of path (source, ..., u, v)
 					if (v.getCost() > altCost) {
-						tracePathUpdated(u, v, v.getCost(), altCost);
+						traceNewPathFound(u, v, v.getCost(), altCost);
 						q.update(v, altCost);
 						v.setParent(u);
 					}
@@ -68,7 +73,7 @@ public class PathFinder {
 		}
 	}
 
-	private static void tracePathUpdated(Vertex u, Vertex v, float oldCost, float newCost) {
+	private static void traceNewPathFound(Vertex u, Vertex v, float oldCost, float newCost) {
 		if (oldCost == Float.POSITIVE_INFINITY) {
 			LOGGER.trace(() -> "Found path to %s (%.1f km) via %s".formatted(v, newCost, u));
 		} else {

@@ -31,8 +31,6 @@ import de.amr.routeplanner.graph.PathFinder;
 
 /**
  * @author Armin Reichert
- * 
- * @see https://cs.au.dk/~gerth/papers/fun22.pdf
  */
 public class RoutePlanner {
 
