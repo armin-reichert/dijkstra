@@ -35,6 +35,7 @@ public class Vertex {
 
 	private List<Edge> adjEdges;
 	private Vertex parent;
+	private float cost;
 
 	public Vertex getParent() {
 		return parent;
@@ -42,6 +43,14 @@ public class Vertex {
 
 	public void setParent(Vertex parent) {
 		this.parent = parent;
+	}
+
+	public float getCost() {
+		return cost;
+	}
+
+	public void setCost(float cost) {
+		this.cost = cost;
 	}
 
 	public void addOutgoingEdge(Vertex to, float cost) {

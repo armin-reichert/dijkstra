@@ -97,13 +97,12 @@ public class RoutePlannerApp {
 		for (var start : locationNames) {
 			for (var goal : locationNames) {
 				var route = routePlanner.computeRoute(start, goal);
-				LOGGER.info(() -> "%s nach %s: %s".formatted(start, goal, routeToString(routePlanner, route)));
+				LOGGER.info(() -> "%s nach %s: %s".formatted(start, goal, toStringList(route)));
 			}
 		}
 	}
 
-	private String routeToString(RoutePlanner routePlanner, List<RoadMapPoint> route) {
-		return route.stream().map(point -> "%s %.1f km".formatted(point.location().name(), routePlanner.cost(point)))
-				.toList().toString();
+	private List<String> toStringList(List<RoadMapPoint> route) {
+		return route.stream().map(point -> "%s %.1f km".formatted(point.location().name(), point.getCost())).toList();
 	}
 }

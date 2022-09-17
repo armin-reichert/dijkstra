@@ -24,8 +24,6 @@ SOFTWARE.
 
 package de.amr.routeplanner.graph;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.PriorityQueue;
 
 import org.apache.logging.log4j.LogManager;
@@ -39,15 +37,9 @@ public class MinVertexPQ<V extends Vertex> {
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private PriorityQueue<V> q;
-	private Map<Vertex, Float> vertexCost;
 
 	public MinVertexPQ() {
-		q = new PriorityQueue<>((u, v) -> Float.compare(cost(u), cost(v)));
-		vertexCost = new HashMap<>();
-	}
-
-	public float cost(V v) {
-		return vertexCost.getOrDefault(v, Float.POSITIVE_INFINITY);
+		q = new PriorityQueue<>((u, v) -> Float.compare(u.getCost(), v.getCost()));
 	}
 
 	public boolean isEmpty() {
@@ -56,21 +48,21 @@ public class MinVertexPQ<V extends Vertex> {
 
 	public V extractMinCostVertex() {
 		var min = q.poll();
-		LOGGER.trace(() -> "Extract min: %s (cost=%.1f)".formatted(min, cost(min)));
+		LOGGER.trace(() -> "Extract min: %s (cost=%.1f)".formatted(min, min.getCost()));
 		return min;
 	}
 
 	public void update(V v, float cost) {
 		remove(v);
-		vertexCost.put(v, cost);
+		v.setCost(cost);
 		q.add(v);
-		LOGGER.trace(() -> "Add: %s (cost=%.1f)".formatted(v, cost(v)));
+		LOGGER.trace(() -> "Add: %s (cost=%.1f)".formatted(v, v.getCost()));
 	}
 
 	private void remove(V v) {
 		boolean removed = q.remove(v);
 		if (removed) {
-			LOGGER.trace(() -> "Remove: %s (cost=%.1f)".formatted(v, cost(v)));
+			LOGGER.trace(() -> "Remove: %s (cost=%.1f)".formatted(v, v.getCost()));
 		}
 	}
 }

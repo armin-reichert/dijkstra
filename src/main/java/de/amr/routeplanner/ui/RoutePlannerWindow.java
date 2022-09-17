@@ -79,7 +79,7 @@ public class RoutePlannerWindow extends JFrame {
 			String start = (String) comboStart().getSelectedItem();
 			String goal = (String) comboGoal().getSelectedItem();
 			var route = routePlanner.computeRoute(start, goal);
-			var sections = route.stream().map(p -> "%s %.1f km".formatted(p.location().name(), routePlanner.cost(p))).toList();
+			var sections = route.stream().map(p -> "%s %.1f km".formatted(p.location().name(), p.getCost())).toList();
 			var data = new DefaultListModel<String>();
 			data.addAll(sections);
 			listRoute().setModel(data);

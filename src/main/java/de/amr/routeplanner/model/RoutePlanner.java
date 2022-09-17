@@ -52,13 +52,8 @@ public class RoutePlanner {
 		q = new MinVertexPQ<>();
 	}
 
-	public float cost(RoadMapPoint loc) {
-		return q.cost(loc);
-	}
-
 	public List<RoadMapPoint> computeRoute(String sourceName, String goalName) {
-		return computeRoute((RoadMapPoint) map.vertex(sourceName).orElse(null),
-				(RoadMapPoint) map.vertex(goalName).orElse(null));
+		return computeRoute(map.vertex(sourceName).orElse(null), map.vertex(goalName).orElse(null));
 	}
 
 	public List<RoadMapPoint> computeRoute(RoadMapPoint source, RoadMapPoint goal) {
@@ -80,7 +75,10 @@ public class RoutePlanner {
 	private void dijkstra() {
 		LOGGER.info(() -> "*** Compute all shortest paths from %s using Dijkstra's algorithm".formatted(source));
 		var visited = new HashSet<RoadMapPoint>();
-		map.vertices().forEach(v -> v.setParent(null));
+		map.vertices().forEach(v -> {
+			v.setCost(Float.POSITIVE_INFINITY);
+			v.setParent(null);
+		});
 		q = new MinVertexPQ<>();
 		q.update(source, 0);
 		while (!q.isEmpty()) {
@@ -89,9 +87,9 @@ public class RoutePlanner {
 				visited.add(u);
 				u.outgoingEdges().forEach(edge -> {
 					var v = (RoadMapPoint) edge.to(); // edge = (u, v)
-					var altCost = cost(u) + edge.cost(); // cost of path (source, ..., u, v)
-					if (cost(v) > altCost) {
-						tracePathUpdated(u, v, cost(v), altCost);
+					var altCost = u.getCost() + edge.cost(); // cost of path (source, ..., u, v)
+					if (v.getCost() > altCost) {
+						tracePathUpdated(u, v, v.getCost(), altCost);
 						q.update(v, altCost);
 						v.setParent(u);
 					}
