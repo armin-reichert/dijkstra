@@ -27,8 +27,6 @@ package de.amr.routeplanner.model;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.amr.routeplanner.graph.PathFinder;
-
 /**
  * @author Armin Reichert
  */
@@ -46,7 +44,7 @@ public class RoutePlanner {
 		}
 		if (source != this.source) {
 			this.source = source;
-			PathFinder.dijkstra(map, source);
+			map.computeShortestPathsFrom(source);
 		}
 		var route = new LinkedList<RoadMapPoint>();
 		for (RoadMapPoint v = goal; v != null; v = (RoadMapPoint) v.getParent()) {

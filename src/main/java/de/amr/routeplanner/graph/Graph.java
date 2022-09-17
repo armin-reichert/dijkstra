@@ -29,6 +29,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * @author Armin Reichert
  * 
@@ -36,6 +39,8 @@ import java.util.stream.Stream;
  * @param V vertex class (subclass of {@link Vertex})
  */
 public class Graph<K, V extends Vertex> {
+
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private final Map<K, V> vertexByKey = new HashMap<>();
 
@@ -65,5 +70,49 @@ public class Graph<K, V extends Vertex> {
 
 	public void addDirectedEdge(V source, V target, float cost) {
 		source.addOutgoingEdge(target, cost);
+	}
+
+	/**
+	 * Computes the shortest path from the given source vertex to all vertices of the graph.
+	 * <p>
+	 * TODO: I am not sure if using "visited" is really needed
+	 * 
+	 * @see https://cs.au.dk/~gerth/papers/fun22.pdf
+	 * 
+	 * @param source the source vertex
+	 */
+	public void computeShortestPathsFrom(Vertex source) {
+		LOGGER.info(() -> "*** Compute shortest paths from %s using Dijkstra's algorithm".formatted(source));
+		vertices().forEach(v -> {
+			v.setCost(Float.POSITIVE_INFINITY);
+			v.setParent(null);
+			v.setVisited(false);
+		});
+		var q = new MinVertexPQ();
+		q.update(source, 0);
+		while (!q.isEmpty()) {
+			var u = q.extractMinCostVertex();
+			if (!u.isVisited()) {
+				u.setVisited(true);
+				u.outgoingEdges().forEach(edge -> {
+					var v = edge.to(); // edge = (u, v)
+					var altCost = u.getCost() + edge.cost(); // cost of path (source, ..., u, v)
+					if (v.getCost() > altCost) {
+						traceNewPathFound(u, v, v.getCost(), altCost);
+						q.update(v, altCost);
+						v.setParent(u);
+					}
+				});
+			}
+		}
+	}
+
+	private void traceNewPathFound(Vertex u, Vertex v, float oldCost, float newCost) {
+		if (oldCost == Float.POSITIVE_INFINITY) {
+			LOGGER.trace(() -> "Found path to %s (%.1f km) via %s".formatted(v, newCost, u));
+		} else {
+			LOGGER.trace(() -> "Found shorter path to %s (%.1f km instead of %.1f km) via %s instead via %s".formatted(v,
+					newCost, oldCost, u, v.getParent()));
+		}
 	}
 }
