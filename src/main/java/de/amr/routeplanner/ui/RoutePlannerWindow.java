@@ -97,11 +97,11 @@ public class RoutePlannerWindow extends JFrame {
 	public RoutePlannerWindow() {
 		setTitle("Routenplaner Saarland");
 		setResizable(false);
-		setSize(1010, 670);
+		setSize(1030, 670);
 		setLocation(30, 30);
 		setVisible(true);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		getContentPane().setLayout(new MigLayout("", "[][grow]", "[][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[grow][800px:800px:800px]", "[][grow]"));
 
 		JPanel panelStartGoal = new JPanel();
 		getContentPane().add(panelStartGoal, "cell 0 0");
