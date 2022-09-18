@@ -42,9 +42,9 @@ public class RoadMapReader {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private static final int MODE_SKIP = 0;
-	private static final int MODE_LOCATIONS = 1;
-	private static final int MODE_ROADS = 2;
+	private static final int STATE_READ = 0;
+	private static final int STATE_READ_LOCATIONS = 1;
+	private static final int STATE_READ_ROADS = 2;
 
 	private static String[] splitAndTrimCSV(String line) {
 		return Stream.of(line.split(",")).map(String::trim).toArray(String[]::new);
@@ -55,8 +55,8 @@ public class RoadMapReader {
 	}
 
 	private final RoadMap map;
-	private final Map<String, RoadMapPoint> locationByName = new HashMap<>();
-	private int mode = MODE_SKIP;
+	private final Map<String, RoadMapPoint> locationByKey = new HashMap<>();
+	private int state = STATE_READ;
 	private int lineNumber;
 
 	private RoadMapReader(InputStream is) {
@@ -78,13 +78,13 @@ public class RoadMapReader {
 	}
 
 	private void processLine(String line) {
-		if (".locations".equals(line)) {
-			mode = MODE_LOCATIONS;
-		} else if (".roads".equals(line)) {
-			mode = MODE_ROADS;
-		} else if (mode == MODE_LOCATIONS) {
+		if (".locations".equals(line.trim())) {
+			state = STATE_READ_LOCATIONS;
+		} else if (".roads".equals(line.trim())) {
+			state = STATE_READ_ROADS;
+		} else if (state == STATE_READ_LOCATIONS) {
 			parseLocation(line);
-		} else if (mode == MODE_ROADS) {
+		} else if (state == STATE_READ_ROADS) {
 			parseRoad(line);
 		}
 	}
@@ -112,7 +112,10 @@ public class RoadMapReader {
 			LOGGER.error("Line %d: '%s': Invalid longitude: '%s'".formatted(lineNumber, line, tokens[3]));
 			return;
 		}
-		locationByName.put(key, map.getOrCreatePoint(name, latitude, longitude));
+		if (locationByKey.containsKey(key)) {
+			throw new IllegalStateException("Location key '%s' already used");
+		}
+		locationByKey.put(key, map.getOrCreatePoint(name, latitude, longitude));
 	}
 
 	private void parseRoad(String line) {
@@ -122,12 +125,12 @@ public class RoadMapReader {
 			LOGGER.error(() -> "Line %d: '%s': Invalid road spec".formatted(lineNumber, line));
 			return;
 		}
-		var fromLocation = locationByName.get(tokens[0]);
+		var fromLocation = locationByKey.get(tokens[0]);
 		if (fromLocation == null) {
 			LOGGER.error(() -> "Line %d: '%s': Invalid location: '%s'".formatted(lineNumber, line, tokens[0]));
 			return;
 		}
-		var toLocation = locationByName.get(tokens[1]);
+		var toLocation = locationByKey.get(tokens[1]);
 		if (toLocation == null) {
 			LOGGER.error(() -> "Line %d: '%s': Invalid location: '%s'".formatted(lineNumber, line, tokens[1]));
 			return;
