@@ -166,7 +166,7 @@ public class RoutePlannerWindow extends JFrame {
 
 	public void setMap(RoadMap map) {
 		this.map = Objects.requireNonNull(map);
-		var locationNames = map.pointNames().toList();
+		var locationNames = map.locationNames().toList();
 		if (!locationNames.isEmpty()) {
 			comboStart().setSelectedItem(locationNames.get(0));
 			comboGoal().setSelectedItem(locationNames.get(locationNames.size() - 1));

@@ -86,7 +86,7 @@ public class RoadMap extends Graph<String, RoadMapPoint> {
 		return points(RoadMap::orderByLocationName);
 	}
 
-	public Stream<String> pointNames() {
+	public Stream<String> locationNames() {
 		return pointsOrderedByLocationName().map(RoadMapPoint::location).map(Location::name);
 	}
 
