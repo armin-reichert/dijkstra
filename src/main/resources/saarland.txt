@@ -9,16 +9,19 @@ blk, Blieskastel, 49.238, 7.259
 dil, Dillingen, 49.353, 6.714
 epp, Eppelborn, 49.409, 6.964
 fre, Freisen, 49.5523, 7.2487
+fth, Friedrichsthal, 49.327, 7.092
 ger, Gersheim, 49.1475, 7.207
 gro, Großrosseln, 49.206, 6.838
 heu, Heusweiler, 49.338, 6.929
 hom, Homburg, 49.329, 7.339
 igb, St. Ingbert, 49.278, 7.112
+ill, Illingen, 49.374, 7.048
 klb, Kleinblittersdorf, 49.157, 7.035
 leb, Lebach, 49.41, 6.91
 los, Losheim am See, 49.51, 6.75
 man, Mandelbachtal, 49.197, 7.18
 met, Mettlach, 49.493, 6.593
+mwl, Merchweiler, 49.359, 7.063
 mzg, Merzig, 49.449, 6.643
 nal, Nalbach, 49.378, 6.781
 nkr, Neunkirchen, 49.349, 7.177
@@ -29,6 +32,9 @@ sbr, Saarbrücken, 49.238, 6.997
 sib, Siersburg, 49.365, 6.668
 sls, Saarlouis, 49.313, 6.752
 slz, Schmelz, 49.432, 6.843
+spe, Spiesen-Elversberg, 49.318, 7.141
+swl, Saarwellingen, 49.355, 6.805
+sul, Sulzbach, 49.3, 7.0577
 tho, Tholey, 49.482, 7.032
 ueb, Überherrn, 49.239, 6.7
 vlk, Völklingen, 49.255, 6.859
@@ -44,7 +50,10 @@ garbage line (see log for error message)
 .roads
 
 bec, dil, 3.5
+bec, los, 15.5
+bec, nal, 11.0
 bec, sib, 5.0
+bec, slz, 14.0
 blk, hom, 14.0
 blk, igb, 15.0
 blk, man, 9.0
@@ -52,11 +61,17 @@ blk, sbr, 25.0
 dil, nal, 6.0
 dil, sib, 6.0
 dil, sls, 9.0
+dil, swl, 9.0
 epp, heu, 10.0
+epp, ill, 11.0
 epp, nkr, 21.5
 epp, sbr, 31.0
 fre, noh, 12.5
 fre, wnd, 16.0
+fth, mwl, 6.5
+fth, nkr, 8.5
+fth, sul, 5.0
+fth, spe, 5.0
 ger, blk, 14.5
 ger, man, 10.5
 gro, vlk, 8.5
@@ -64,15 +79,19 @@ gro, ueb, 16.0
 heu, nkr, 24.0
 heu, sbr, 14.5
 heu, sls, 20.5
+heu, swl, 10.5
 heu, vlk, 12.0
 igb, hom, 22.0
-igb, nkr, 10.5
+igb, spe, 5.0
+igb, sul, 7.0
+ill, mwl, 3.0
 klb, sbr, 11.5
 klb, man, 18.5
 klb, ger, 19.0
 leb, epp, 8.0
 leb, heu, 9.5
 leb, nal, 11.0
+leb, swl, 12.0
 leb, tho, 17
 los, met, 15.0
 los, mzg, 13.2
@@ -84,7 +103,10 @@ met, per, 19.5
 mzg, bec, 12.5
 mzg, met, 9.5
 mzg, per, 24.0
+mwl, nkr, 9.5
+nal, swl, 4.5
 nkr, hom, 19.0
+nkr, spe, 6.5
 noh, wad, 27.0
 noh, non, 16.0
 noh, wnd, 18.0
@@ -93,14 +115,16 @@ non, wad, 11.5
 non, tho, 19.5
 non, wnd, 30.0
 sbr, igb, 11.0
+sbr, sul, 9.5
 sib, wal, 6.5
-sls, nal, 11.0
+sls, swl, 9.0
 sls, ueb, 10.5
 sls, vlk, 14.0
 sls, wal, 4.0
 slz, leb, 5
 slz, nal, 10.5
 slz, wad, 18.0
+spe, sul, 7.0
 tho, wnd, 13.0
 vlk, sbr, 12.5
 vlk, ueb, 18.5
