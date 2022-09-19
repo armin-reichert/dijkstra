@@ -27,6 +27,7 @@ klb, Kleinblittersdorf, 49.157, 7.035
 leb, Lebach, 49.41, 6.91
 los, Losheim am See, 49.51, 6.75
 man, Mandelbachtal, 49.197, 7.18
+mar, Marpingen, 49.451, 7.057
 met, Mettlach, 49.493, 6.593
 mwl, Merchweiler, 49.359, 7.063
 mzg, Merzig, 49.449, 6.643
@@ -68,8 +69,7 @@ dil, sls, 9.0
 dil, swl, 9.0
 epp, heu, 10.0
 epp, ill, 11.0
-epp, nkr, 21.5
-epp, sbr, 31.0
+epp, tho, 12.5
 fre, noh, 12.5
 fre, wnd, 16.0
 fth, mwl, 6.5
@@ -104,6 +104,11 @@ los, wad, 15.0
 los, wei, 8.5
 man, sbr, 18.0
 met, per, 19.5
+mar, epp, 10.0
+mar, tho, 10.0
+mar, wnd, 13.5
+mar, ill, 12.0
+mar, 
 mzg, bec, 12.5
 mzg, met, 9.5
 mzg, per, 24.0
@@ -131,6 +136,7 @@ sls, vlk, 14.0
 sls, wal, 4.0
 slz, leb, 5
 slz, wad, 18.0
+slz, tho, 19.0
 spe, sul, 7.0
 tho, wnd, 13.0
 vlk, sbr, 12.5
