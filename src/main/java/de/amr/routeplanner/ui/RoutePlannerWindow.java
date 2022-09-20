@@ -78,7 +78,7 @@ public class RoutePlannerWindow extends JFrame {
 			String start = (String) comboStart().getSelectedItem();
 			String goal = (String) comboGoal().getSelectedItem();
 			var route = map.computeRoute(start, goal);
-			var sections = route.stream().map(p -> "%s %.1f km".formatted(p.location().name(), p.getCost())).toList();
+			var sections = route.stream().map(p -> "%s %.1f km".formatted(p.name(), p.getCost())).toList();
 			var data = new DefaultListModel<String>();
 			data.addAll(sections);
 			listRoute().setModel(data);
@@ -197,9 +197,9 @@ public class RoutePlannerWindow extends JFrame {
 		var nearest = getNearestLocation(coord, 50);
 		if (nearest != null) {
 			if (e.isShiftDown()) {
-				comboGoal().setSelectedItem(nearest.location().name());
+				comboGoal().setSelectedItem(nearest.name());
 			} else {
-				comboStart().setSelectedItem(nearest.location().name());
+				comboStart().setSelectedItem(nearest.name());
 			}
 		}
 		mousePosition = e.getPoint();
@@ -240,11 +240,10 @@ public class RoutePlannerWindow extends JFrame {
 			nearest = getNearestLocation(coord, 50);
 		}
 		for (var v : map.pointsOrderedByLocationName().toList()) {
-			Point p = getPointAtCoord(v.location().coord());
-			var key = v.location().name();
-			if (key.equals(comboStart().getSelectedItem())) {
+			Point p = getPointAtCoord(v.coord());
+			if (v.name().equals(comboStart().getSelectedItem())) {
 				circle(g, p, COLOR_START, 6);
-			} else if (key.equals(comboGoal().getSelectedItem())) {
+			} else if (v.name().equals(comboGoal().getSelectedItem())) {
 				circle(g, p, COLOR_GOAL, 6);
 			} else if (v == nearest) {
 				circle(g, p, shiftPressed ? COLOR_GOAL : COLOR_START, 8);
@@ -261,9 +260,9 @@ public class RoutePlannerWindow extends JFrame {
 		g.setColor(Color.RED);
 		g.setStroke(new BasicStroke(1f));
 		for (int i = 0; i < route.size(); ++i) {
-			var p = getPointAtCoord(route.get(i).location().coord());
+			var p = getPointAtCoord(route.get(i).coord());
 			if (i > 0) {
-				var q = getPointAtCoord(route.get(i - 1).location().coord());
+				var q = getPointAtCoord(route.get(i - 1).coord());
 				g.drawLine(p.x, p.y, q.x, q.y);
 			}
 		}
@@ -273,8 +272,8 @@ public class RoutePlannerWindow extends JFrame {
 		g.setColor(Color.DARK_GRAY);
 		g.setStroke(new BasicStroke(0.1f));
 		map.edges().forEach(road -> {
-			Point from = getPointAtCoord(((RoadMapPoint) road.from()).location().coord());
-			Point to = getPointAtCoord(((RoadMapPoint) road.to()).location().coord());
+			Point from = getPointAtCoord(((RoadMapPoint) road.from()).coord());
+			Point to = getPointAtCoord(((RoadMapPoint) road.to()).coord());
 			g.drawLine(from.x, from.y, to.x, to.y);
 		});
 	}
@@ -299,7 +298,7 @@ public class RoutePlannerWindow extends JFrame {
 		double minDist = Double.POSITIVE_INFINITY;
 		RoadMapPoint nearest = null;
 		for (var v : map.pointsOrderedByLocationName().toList()) {
-			double dist = distance(coord, v.location().coord());
+			double dist = distance(coord, v.coord());
 			if (dist < minDist) {
 				nearest = v;
 				minDist = dist;

@@ -39,8 +39,8 @@ import de.amr.routeplanner.graph.Vertex;
  */
 public class RoadMap extends Graph<String, RoadMapPoint> {
 
-	public static int orderByLocationName(RoadMapPoint u, RoadMapPoint v) {
-		return u.location().name().compareTo(v.location().name());
+	public static int orderByKey(RoadMapPoint u, RoadMapPoint v) {
+		return u.name().compareTo(v.name());
 	}
 
 	private RoadMapPoint source;
@@ -83,11 +83,11 @@ public class RoadMap extends Graph<String, RoadMapPoint> {
 	}
 
 	public Stream<RoadMapPoint> pointsOrderedByLocationName() {
-		return points(RoadMap::orderByLocationName);
+		return points(RoadMap::orderByKey);
 	}
 
 	public Stream<String> locationNames() {
-		return pointsOrderedByLocationName().map(RoadMapPoint::location).map(Location::name);
+		return pointsOrderedByLocationName().map(RoadMapPoint::name);
 	}
 
 	public void print(Consumer<String> destination, Comparator<RoadMapPoint> order) {
@@ -96,7 +96,7 @@ public class RoadMap extends Graph<String, RoadMapPoint> {
 	}
 
 	private String formatEdge(Edge edge) {
-		return "[%s -> %s %.1f km]".formatted(((RoadMapPoint) edge.from()).location().name(),
-				((RoadMapPoint) edge.to()).location().name(), edge.cost());
+		return "[%s -> %s %.1f km]".formatted(((RoadMapPoint) edge.from()).name(), ((RoadMapPoint) edge.to()).name(),
+				edge.cost());
 	}
 }

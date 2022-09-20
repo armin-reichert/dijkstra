@@ -90,7 +90,7 @@ public class RoutePlannerApp {
 	}
 
 	private void printAllRoutes() {
-		map.print(LOGGER::info, RoadMap::orderByLocationName);
+		map.print(LOGGER::info, RoadMap::orderByKey);
 		var locationNames = map.locationNames().toArray(String[]::new);
 		for (var start : locationNames) {
 			for (var goal : locationNames) {
@@ -101,6 +101,6 @@ public class RoutePlannerApp {
 	}
 
 	private List<String> toStringList(List<RoadMapPoint> route) {
-		return route.stream().map(point -> "%s %.1f km".formatted(point.location().name(), point.getCost())).toList();
+		return route.stream().map(point -> "%s %.1f km".formatted(point.name(), point.getCost())).toList();
 	}
 }

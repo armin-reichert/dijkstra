@@ -55,7 +55,7 @@ public class RoadMapReader {
 	}
 
 	private final RoadMap map;
-	private final Map<String, RoadMapPoint> locationByKey = new HashMap<>();
+	private final Map<String, RoadMapPoint> pointsByKey = new HashMap<>();
 	private int state = STATE_READ;
 	private int lineNumber;
 
@@ -90,7 +90,7 @@ public class RoadMapReader {
 	}
 
 	private void parseLocation(String line) {
-		// key, location name, latitude, longitude
+		// (point key, location name, latitude, longitude)
 		String[] tokens = splitAndTrimCSV(line);
 		if (tokens.length != 4) {
 			LOGGER.error(() -> "Line %d: '%s': Invalid location spec".formatted(lineNumber, line));
@@ -112,10 +112,10 @@ public class RoadMapReader {
 			LOGGER.error("Line %d: '%s': Invalid longitude: '%s'".formatted(lineNumber, line, tokens[3]));
 			return;
 		}
-		if (locationByKey.containsKey(key)) {
+		if (pointsByKey.containsKey(key)) {
 			throw new IllegalStateException("Location key '%s' already used");
 		}
-		locationByKey.put(key, map.getOrCreatePoint(name, latitude, longitude));
+		pointsByKey.put(key, map.getOrCreatePoint(name, latitude, longitude));
 	}
 
 	private void parseRoad(String line) {
@@ -125,12 +125,12 @@ public class RoadMapReader {
 			LOGGER.error(() -> "Line %d: '%s': Invalid road spec".formatted(lineNumber, line));
 			return;
 		}
-		var fromLocation = locationByKey.get(tokens[0]);
+		var fromLocation = pointsByKey.get(tokens[0]);
 		if (fromLocation == null) {
 			LOGGER.error(() -> "Line %d: '%s': Invalid location: '%s'".formatted(lineNumber, line, tokens[0]));
 			return;
 		}
-		var toLocation = locationByKey.get(tokens[1]);
+		var toLocation = pointsByKey.get(tokens[1]);
 		if (toLocation == null) {
 			LOGGER.error(() -> "Line %d: '%s': Invalid location: '%s'".formatted(lineNumber, line, tokens[1]));
 			return;
