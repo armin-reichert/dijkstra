@@ -106,12 +106,13 @@ man, sbr, 18.0
 met, per, 19.5
 mar, epp, 10.0
 mar, tho, 10.0
-mar, wnd, 13.5
+mar, wnd, 14.5
 mar, ill, 12.0
 mar, 
 mzg, bec, 12.5
 mzg, met, 9.5
 mzg, per, 24.0
+mzg, slz, 21.0
 mwl, nkr, 9.5
 nal, swl, 4.5
 nal, slz, 10.5

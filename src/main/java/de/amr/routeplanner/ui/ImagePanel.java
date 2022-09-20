@@ -24,6 +24,7 @@ SOFTWARE.
 
 package de.amr.routeplanner.ui;
 
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyAdapter;
@@ -77,6 +78,7 @@ public class ImagePanel extends JPanel {
 				onMouseMoved.accept(e);
 			}
 		});
+		setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 	}
 
 	public void setImage(BufferedImage image) {

@@ -213,7 +213,7 @@ public class RoutePlannerWindow extends JFrame {
 		drawRoads(g);
 		drawRoute(g);
 		drawStartAndGoalLocations(g);
-		drawMouseCoord(g);
+		drawMouseCoordAtCursorPosition(g);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 
@@ -223,12 +223,13 @@ public class RoutePlannerWindow extends JFrame {
 		g.drawString("Click near city to set start, Shift-CLICK to set goal", 20, 20);
 	}
 
-	private void drawMouseCoord(Graphics2D g) {
+	private void drawMouseCoordAtCursorPosition(Graphics2D g) {
 		if (mousePosition != null) {
 			GeoCoord coord = getCoordAtPosition(mousePosition.x, mousePosition.y);
 			g.setColor(Color.BLACK);
 			g.setFont(new Font("Sans", Font.PLAIN, 10));
-			g.drawString("%.3f %.3f".formatted(coord.latitude(), coord.longitude()), mousePosition.x, mousePosition.y);
+			g.drawString("%.3f %.3f".formatted(coord.latitude(), coord.longitude()), mousePosition.x + 5,
+					mousePosition.y - 5);
 		}
 	}
 
