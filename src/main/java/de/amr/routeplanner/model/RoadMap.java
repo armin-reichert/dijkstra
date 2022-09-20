@@ -74,10 +74,6 @@ public class RoadMap extends Graph<String, RoadMapPoint> {
 		return p;
 	}
 
-	public void addConnection(RoadMapPoint either, RoadMapPoint other, float cost) {
-		addEdge(either, other, cost);
-	}
-
 	public Stream<RoadMapPoint> points(Comparator<RoadMapPoint> order) {
 		return vertices().map(RoadMapPoint.class::cast).sorted(order);
 	}
