@@ -90,7 +90,7 @@ public class RoutePlannerApp {
 	}
 
 	private void printAllRoutes() {
-		map.print(LOGGER::info, RoadMap::orderByKey);
+		map.print(LOGGER::info, RoadMap::orderedByName);
 		var locationNames = map.locationNames().toArray(String[]::new);
 		for (var start : locationNames) {
 			for (var goal : locationNames) {
