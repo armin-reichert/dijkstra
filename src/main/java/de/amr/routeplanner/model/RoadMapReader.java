@@ -97,6 +97,9 @@ public class RoadMapReader {
 			return;
 		}
 		String key = tokens[0];
+		if (pointsByKey.containsKey(key)) {
+			throw new IllegalStateException("Location key '%s' already used");
+		}
 		String name = tokens[1];
 		float latitude;
 		try {
@@ -111,9 +114,6 @@ public class RoadMapReader {
 		} catch (NumberFormatException x) {
 			LOGGER.error("Line %d: '%s': Invalid longitude: '%s'".formatted(lineNumber, line, tokens[3]));
 			return;
-		}
-		if (pointsByKey.containsKey(key)) {
-			throw new IllegalStateException("Location key '%s' already used");
 		}
 		pointsByKey.put(key, map.getOrCreatePoint(name, latitude, longitude));
 	}
