@@ -27,6 +27,7 @@ package de.amr.routeplanner.model;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -71,7 +72,7 @@ public class RoadMap extends Graph<RoadMapPoint> {
 	}
 
 	public RoadMapPoint createAndAddPoint(String key, String locationName, float latitude, float longitude) {
-		var point = new RoadMapPoint(key, locationName, latitude, longitude);
+		var point = new RoadMapPoint(Objects.requireNonNull(key), locationName, latitude, longitude);
 		addVertex(point);
 		return point;
 	}

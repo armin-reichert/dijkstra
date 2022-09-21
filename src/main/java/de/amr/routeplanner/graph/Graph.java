@@ -24,9 +24,9 @@ SOFTWARE.
 
 package de.amr.routeplanner.graph;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -41,21 +41,25 @@ public class Graph<V extends Vertex> {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private final Map<String, V> vertexByKey = new HashMap<>();
+	private final Set<V> vertexSet = new HashSet<>();
 
 	public void addVertex(V vertex) {
-		if (vertexByKey.containsKey(vertex.getKey())) {
+		if (vertexSet.contains(vertex)) {
 			throw new IllegalArgumentException("Vertex with key '" + vertex.getKey() + "' already exists.");
 		}
-		vertexByKey.put(vertex.getKey(), vertex);
+		vertexSet.add(vertex);
 	}
 
 	public Optional<V> vertex(String key) {
-		return Optional.ofNullable(vertexByKey.get(key));
+		return vertices().filter(v -> v.getKey().equals(key)).findAny();
+	}
+
+	public boolean contains(V vertex) {
+		return vertexSet.contains(vertex);
 	}
 
 	public Stream<V> vertices() {
-		return vertexByKey.values().stream();
+		return vertexSet.stream();
 	}
 
 	public Stream<Edge> edges() {
