@@ -35,7 +35,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Armin Reichert
  * 
- * @param K type of keys for identifying vertices
  * @param V vertex class (subclass of {@link Vertex})
  */
 public class Graph<V extends Vertex> {
