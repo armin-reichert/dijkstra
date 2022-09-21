@@ -37,16 +37,22 @@ import de.amr.routeplanner.graph.Vertex;
 /**
  * @author Armin Reichert
  */
-public class RoadMap extends Graph<String, RoadMapPoint> {
+public class RoadMap extends Graph<RoadMapPoint> {
 
-	public static int orderedByName(RoadMapPoint u, RoadMapPoint v) {
-		return u.name().compareTo(v.name());
+	public static int orderedByLocationName(RoadMapPoint u, RoadMapPoint v) {
+		return u.locationName().compareTo(v.locationName());
 	}
 
 	private RoadMapPoint source;
 
-	public List<RoadMapPoint> computeRoute(String sourceName, String goalName) {
-		return computeRoute(vertex(sourceName).orElse(null), vertex(goalName).orElse(null));
+	public List<RoadMapPoint> computeRoute(String sourceLocationName, String goalLocationName) {
+		var source = findPoint(sourceLocationName);
+		var goal = findPoint(goalLocationName);
+		return computeRoute(source, goal);
+	}
+
+	private RoadMapPoint findPoint(String locationName) {
+		return pointsOrderedByLocationName().filter(p -> p.locationName().equals(locationName)).findFirst().orElse(null);
 	}
 
 	public List<RoadMapPoint> computeRoute(RoadMapPoint source, RoadMapPoint goal) {
@@ -64,9 +70,9 @@ public class RoadMap extends Graph<String, RoadMapPoint> {
 		return route;
 	}
 
-	public RoadMapPoint createAndAddPoint(String name, float latitude, float longitude) {
-		var point = new RoadMapPoint(name, latitude, longitude);
-		addVertex(name, point);
+	public RoadMapPoint createAndAddPoint(String key, String locationName, float latitude, float longitude) {
+		var point = new RoadMapPoint(key, locationName, latitude, longitude);
+		addVertex(point);
 		return point;
 	}
 
@@ -75,11 +81,11 @@ public class RoadMap extends Graph<String, RoadMapPoint> {
 	}
 
 	public Stream<RoadMapPoint> pointsOrderedByLocationName() {
-		return points(RoadMap::orderedByName);
+		return points(RoadMap::orderedByLocationName);
 	}
 
 	public Stream<String> locationNames() {
-		return pointsOrderedByLocationName().map(RoadMapPoint::name);
+		return pointsOrderedByLocationName().map(RoadMapPoint::locationName);
 	}
 
 	public void print(Consumer<String> destination, Comparator<RoadMapPoint> order) {
@@ -88,7 +94,7 @@ public class RoadMap extends Graph<String, RoadMapPoint> {
 	}
 
 	private String formatEdge(Edge edge) {
-		return "[%s -> %s %.1f km]".formatted(((RoadMapPoint) edge.from()).name(), ((RoadMapPoint) edge.to()).name(),
-				edge.cost());
+		return "[%s -> %s %.1f km]".formatted(((RoadMapPoint) edge.from()).locationName(),
+				((RoadMapPoint) edge.to()).locationName(), edge.cost());
 	}
 }

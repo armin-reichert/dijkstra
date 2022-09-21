@@ -28,8 +28,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -55,7 +53,6 @@ public class RoadMapReader {
 	}
 
 	private final RoadMap map;
-	private final Map<String, RoadMapPoint> pointsByKey = new HashMap<>();
 	private int state = STATE_READ;
 	private int lineNumber;
 
@@ -90,16 +87,13 @@ public class RoadMapReader {
 	}
 
 	private void parseLocation(String line) {
-		// (point key, location name, latitude, longitude)
+		// (key, location name, latitude, longitude)
 		String[] tokens = splitAndTrimCSV(line);
 		if (tokens.length != 4) {
 			LOGGER.error(() -> "Line %d: '%s': Invalid location spec".formatted(lineNumber, line));
 			return;
 		}
 		String key = tokens[0];
-		if (pointsByKey.containsKey(key)) {
-			throw new IllegalStateException("Location key '%s' already used");
-		}
 		String name = tokens[1];
 		float latitude;
 		try {
@@ -115,7 +109,7 @@ public class RoadMapReader {
 			LOGGER.error("Line %d: '%s': Invalid longitude: '%s'".formatted(lineNumber, line, tokens[3]));
 			return;
 		}
-		pointsByKey.put(key, map.createAndAddPoint(name, latitude, longitude));
+		map.createAndAddPoint(key, name, latitude, longitude);
 	}
 
 	private void parseRoad(String line) {
@@ -125,14 +119,14 @@ public class RoadMapReader {
 			LOGGER.error(() -> "Line %d: '%s': Invalid road spec".formatted(lineNumber, line));
 			return;
 		}
-		var fromLocation = pointsByKey.get(tokens[0]);
-		if (fromLocation == null) {
-			LOGGER.error(() -> "Line %d: '%s': Invalid location: '%s'".formatted(lineNumber, line, tokens[0]));
+		var from = map.vertex(tokens[0]);
+		if (from.isEmpty()) {
+			LOGGER.error(() -> "Line %d: '%s': Undefined road start point: '%s'".formatted(lineNumber, line, tokens[0]));
 			return;
 		}
-		var toLocation = pointsByKey.get(tokens[1]);
-		if (toLocation == null) {
-			LOGGER.error(() -> "Line %d: '%s': Invalid location: '%s'".formatted(lineNumber, line, tokens[1]));
+		var to = map.vertex(tokens[1]);
+		if (to.isEmpty()) {
+			LOGGER.error(() -> "Line %d: '%s': Undefined road end point: '%s'".formatted(lineNumber, line, tokens[1]));
 			return;
 		}
 		float dist;
@@ -142,6 +136,6 @@ public class RoadMapReader {
 			LOGGER.error("Line %d: '%s': Invalid distance: '%s'".formatted(lineNumber, line, tokens[2]));
 			return;
 		}
-		map.addEdge(fromLocation, toLocation, dist);
+		map.addEdge(from.get(), to.get(), dist);
 	}
 }

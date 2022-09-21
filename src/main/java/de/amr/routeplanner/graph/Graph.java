@@ -38,20 +38,20 @@ import org.apache.logging.log4j.Logger;
  * @param K type of keys for identifying vertices
  * @param V vertex class (subclass of {@link Vertex})
  */
-public class Graph<K, V extends Vertex> {
+public class Graph<V extends Vertex> {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private final Map<K, V> vertexByKey = new HashMap<>();
+	private final Map<String, V> vertexByKey = new HashMap<>();
 
-	public void addVertex(K key, V vertex) {
-		if (vertexByKey.containsKey(key)) {
-			throw new IllegalArgumentException("Vertex with key '" + key + "' already exists.");
+	public void addVertex(V vertex) {
+		if (vertexByKey.containsKey(vertex.getKey())) {
+			throw new IllegalArgumentException("Vertex with key '" + vertex.getKey() + "' already exists.");
 		}
-		vertexByKey.put(key, vertex);
+		vertexByKey.put(vertex.getKey(), vertex);
 	}
 
-	public Optional<V> vertex(K key) {
+	public Optional<V> vertex(String key) {
 		return Optional.ofNullable(vertexByKey.get(key));
 	}
 

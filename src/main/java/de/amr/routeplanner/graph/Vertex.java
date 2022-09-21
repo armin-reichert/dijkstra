@@ -34,9 +34,18 @@ import java.util.stream.Stream;
 public class Vertex {
 
 	private List<Edge> adjEdges;
+	private final String key;
 	private Vertex parent;
 	private float cost;
 	private boolean visited;
+
+	public Vertex(String key) {
+		this.key = key;
+	}
+
+	public String getKey() {
+		return key;
+	}
 
 	public Vertex getParent() {
 		return parent;

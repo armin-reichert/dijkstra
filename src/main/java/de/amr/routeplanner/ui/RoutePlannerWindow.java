@@ -78,7 +78,7 @@ public class RoutePlannerWindow extends JFrame {
 			String start = (String) comboStart().getSelectedItem();
 			String goal = (String) comboGoal().getSelectedItem();
 			var route = map.computeRoute(start, goal);
-			var sections = route.stream().map(p -> "%s %.1f km".formatted(p.name(), p.getCost())).toList();
+			var sections = route.stream().map(p -> "%s %.1f km".formatted(p.locationName(), p.getCost())).toList();
 			var data = new DefaultListModel<String>();
 			data.addAll(sections);
 			listRoute().setModel(data);
@@ -197,9 +197,9 @@ public class RoutePlannerWindow extends JFrame {
 		var nearest = getNearestLocation(coord, 50);
 		if (nearest != null) {
 			if (e.isShiftDown()) {
-				comboGoal().setSelectedItem(nearest.name());
+				comboGoal().setSelectedItem(nearest.locationName());
 			} else {
-				comboStart().setSelectedItem(nearest.name());
+				comboStart().setSelectedItem(nearest.locationName());
 			}
 		}
 		mousePosition = e.getPoint();
@@ -241,9 +241,9 @@ public class RoutePlannerWindow extends JFrame {
 		}
 		for (var v : map.pointsOrderedByLocationName().toList()) {
 			Point p = getPointAtCoord(v.coord());
-			if (v.name().equals(comboStart().getSelectedItem())) {
+			if (v.locationName().equals(comboStart().getSelectedItem())) {
 				circle(g, p, COLOR_START, 6);
-			} else if (v.name().equals(comboGoal().getSelectedItem())) {
+			} else if (v.locationName().equals(comboGoal().getSelectedItem())) {
 				circle(g, p, COLOR_GOAL, 6);
 			} else if (v == nearest) {
 				circle(g, p, shiftPressed ? COLOR_GOAL : COLOR_START, 8);

@@ -31,16 +31,17 @@ import de.amr.routeplanner.graph.Vertex;
  */
 public class RoadMapPoint extends Vertex {
 
-	private final String name;
+	private final String locationName;
 	private final GeoCoord coord;
 
-	public RoadMapPoint(String name, float latitude, float longitude) {
-		this.name = name;
+	public RoadMapPoint(String key, String locationName, float latitude, float longitude) {
+		super(key);
+		this.locationName = locationName;
 		this.coord = new GeoCoord(latitude, longitude);
 	}
 
-	public String name() {
-		return name;
+	public String locationName() {
+		return locationName;
 	}
 
 	public GeoCoord coord() {
@@ -49,6 +50,6 @@ public class RoadMapPoint extends Vertex {
 
 	@Override
 	public String toString() {
-		return "[%s %.3f %.3f]".formatted(name, coord.latitude(), coord.longitude());
+		return "[%s %.3f %.3f]".formatted(locationName, coord.latitude(), coord.longitude());
 	}
 }
