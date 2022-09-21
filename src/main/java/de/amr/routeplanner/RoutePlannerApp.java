@@ -74,7 +74,7 @@ public class RoutePlannerApp {
 			e.printStackTrace();
 		}
 		var window = new RoutePlannerWindow();
-		var locationNames = map.locationNames().toArray(String[]::new);
+		var locationNames = map.locations().toArray(String[]::new);
 		window.comboStart().setModel(new DefaultComboBoxModel<>(locationNames));
 		window.comboGoal().setModel(new DefaultComboBoxModel<>(locationNames));
 		window.listRoute().setModel(new DefaultListModel<>());
@@ -91,7 +91,7 @@ public class RoutePlannerApp {
 
 	private void printAllRoutes() {
 		map.print(LOGGER::info, RoadMap::orderedByLocationName);
-		var locationNames = map.locationNames().toArray(String[]::new);
+		var locationNames = map.locations().toArray(String[]::new);
 		for (var start : locationNames) {
 			for (var goal : locationNames) {
 				var route = map.computeRoute(start, goal);

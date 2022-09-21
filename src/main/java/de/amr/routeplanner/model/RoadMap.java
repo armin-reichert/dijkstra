@@ -44,57 +44,55 @@ public class RoadMap extends Graph<RoadMapPoint> {
 		return u.locationName().compareTo(v.locationName());
 	}
 
-	private RoadMapPoint source;
+	private RoadMapPoint currentSource;
 
-	public List<RoadMapPoint> computeRoute(String sourceLocationName, String goalLocationName) {
-		var sourcePoint = findPoint(sourceLocationName);
-		var goalPoint = findPoint(goalLocationName);
-		return computeRoute(sourcePoint, goalPoint);
+	private RoadMapPoint findPoint(String location) {
+		return pointsOrderedByLocationName().filter(p -> p.locationName().equals(location)).findFirst().orElse(null);
 	}
 
-	private RoadMapPoint findPoint(String locationName) {
-		return pointsOrderedByLocationName().filter(p -> p.locationName().equals(locationName)).findFirst().orElse(null);
+	public List<RoadMapPoint> computeRoute(String sourceLocation, String goalLocation) {
+		return computeRoute(findPoint(sourceLocation), findPoint(goalLocation));
 	}
 
-	public List<RoadMapPoint> computeRoute(RoadMapPoint sourcePoint, RoadMapPoint goalPoint) {
-		if (sourcePoint == null || goalPoint == null) {
+	public List<RoadMapPoint> computeRoute(RoadMapPoint source, RoadMapPoint goal) {
+		if (source == null || goal == null) {
 			return List.of();
 		}
-		if (sourcePoint != this.source) {
-			this.source = sourcePoint;
-			computeShortestPathsFrom(sourcePoint);
+		if (source != currentSource) {
+			currentSource = source;
+			computeShortestPathsFrom(currentSource);
 		}
 		var route = new LinkedList<RoadMapPoint>();
-		for (RoadMapPoint v = goalPoint; v != null; v = (RoadMapPoint) v.parent()) {
+		for (RoadMapPoint v = goal; v != null; v = (RoadMapPoint) v.parent()) {
 			route.addFirst(v);
 		}
 		return route;
 	}
 
-	public RoadMapPoint createAndAddPoint(String id, String locationName, float latitude, float longitude) {
-		var point = new RoadMapPoint(Objects.requireNonNull(id), locationName, latitude, longitude);
+	public RoadMapPoint createAndAddPoint(String id, String location, float latitude, float longitude) {
+		var point = new RoadMapPoint(Objects.requireNonNull(id), location, latitude, longitude);
 		addVertex(point);
 		return point;
 	}
 
-	public Stream<RoadMapPoint> points(Comparator<RoadMapPoint> order) {
-		return vertices().map(RoadMapPoint.class::cast).sorted(order);
+	public Stream<RoadMapPoint> points(Comparator<RoadMapPoint> ordering) {
+		return vertices().map(RoadMapPoint.class::cast).sorted(ordering);
 	}
 
 	public Stream<RoadMapPoint> pointsOrderedByLocationName() {
 		return points(RoadMap::orderedByLocationName);
 	}
 
-	public Stream<String> locationNames() {
+	public Stream<String> locations() {
 		return pointsOrderedByLocationName().map(RoadMapPoint::locationName);
 	}
 
-	public void print(Consumer<String> destination, Comparator<RoadMapPoint> order) {
-		points(order).map(RoadMapPoint::toString).forEach(destination::accept);
-		points(order).flatMap(Vertex::outgoingEdges).map(this::formatEdge).forEach(destination::accept);
+	public void print(Consumer<String> printer, Comparator<RoadMapPoint> order) {
+		points(order).map(RoadMapPoint::toString).forEach(printer::accept);
+		points(order).flatMap(Vertex::outgoingEdges).map(RoadMap::edgeToString).forEach(printer::accept);
 	}
 
-	private String formatEdge(Edge edge) {
+	private static String edgeToString(Edge edge) {
 		return "[%s -> %s %.1f km]".formatted(((RoadMapPoint) edge.from()).locationName(),
 				((RoadMapPoint) edge.to()).locationName(), edge.cost());
 	}
