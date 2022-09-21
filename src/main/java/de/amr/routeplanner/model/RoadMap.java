@@ -47,25 +47,25 @@ public class RoadMap extends Graph<RoadMapPoint> {
 	private RoadMapPoint source;
 
 	public List<RoadMapPoint> computeRoute(String sourceLocationName, String goalLocationName) {
-		var source = findPoint(sourceLocationName);
-		var goal = findPoint(goalLocationName);
-		return computeRoute(source, goal);
+		var sourcePoint = findPoint(sourceLocationName);
+		var goalPoint = findPoint(goalLocationName);
+		return computeRoute(sourcePoint, goalPoint);
 	}
 
 	private RoadMapPoint findPoint(String locationName) {
 		return pointsOrderedByLocationName().filter(p -> p.locationName().equals(locationName)).findFirst().orElse(null);
 	}
 
-	public List<RoadMapPoint> computeRoute(RoadMapPoint source, RoadMapPoint goal) {
-		if (source == null || goal == null) {
+	public List<RoadMapPoint> computeRoute(RoadMapPoint sourcePoint, RoadMapPoint goalPoint) {
+		if (sourcePoint == null || goalPoint == null) {
 			return List.of();
 		}
-		if (source != this.source) {
-			this.source = source;
-			computeShortestPathsFrom(source);
+		if (sourcePoint != this.source) {
+			this.source = sourcePoint;
+			computeShortestPathsFrom(sourcePoint);
 		}
 		var route = new LinkedList<RoadMapPoint>();
-		for (RoadMapPoint v = goal; v != null; v = (RoadMapPoint) v.getParent()) {
+		for (RoadMapPoint v = goalPoint; v != null; v = (RoadMapPoint) v.getParent()) {
 			route.addFirst(v);
 		}
 		return route;

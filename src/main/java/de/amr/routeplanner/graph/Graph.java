@@ -44,8 +44,9 @@ public class Graph<V extends Vertex> {
 	private final Set<V> vertexSet = new HashSet<>();
 
 	public void addVertex(V vertex) {
-		if (vertexSet.contains(vertex)) {
-			throw new IllegalArgumentException("Vertex with key '" + vertex.getKey() + "' already exists.");
+		if (vertex(vertex.getKey()).isPresent()) {
+			LOGGER.error(() -> "Vertex with key '%s' already exists.".formatted(vertex.getKey()));
+			return;
 		}
 		vertexSet.add(vertex);
 	}
