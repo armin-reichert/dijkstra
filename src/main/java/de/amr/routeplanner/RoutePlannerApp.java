@@ -101,6 +101,6 @@ public class RoutePlannerApp {
 	}
 
 	private List<String> toStringList(List<RoadMapPoint> route) {
-		return route.stream().map(point -> "%s %.1f km".formatted(point.locationName(), point.getCost())).toList();
+		return route.stream().map(point -> "%s %.1f km".formatted(point.locationName(), point.cost())).toList();
 	}
 }

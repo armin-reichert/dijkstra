@@ -44,15 +44,15 @@ public class Graph<V extends Vertex> {
 	private final Set<V> vertexSet = new HashSet<>();
 
 	public void addVertex(V vertex) {
-		if (vertex(vertex.getKey()).isPresent()) {
-			LOGGER.error(() -> "Vertex with key '%s' already exists.".formatted(vertex.getKey()));
+		if (vertex(vertex.id()).isPresent()) {
+			LOGGER.error(() -> "Vertex with ID '%s' already exists.".formatted(vertex.id()));
 			return;
 		}
 		vertexSet.add(vertex);
 	}
 
-	public Optional<V> vertex(String key) {
-		return vertices().filter(v -> v.getKey().equals(key)).findAny();
+	public Optional<V> vertex(String id) {
+		return vertices().filter(v -> v.id().equals(id)).findAny();
 	}
 
 	public boolean contains(V vertex) {
@@ -100,9 +100,9 @@ public class Graph<V extends Vertex> {
 				u.setVisited(true);
 				u.outgoingEdges().forEach(edge -> {
 					var v = edge.to(); // edge = (u, v)
-					var altCost = u.getCost() + edge.cost(); // cost of path (source, ..., u, v)
-					if (v.getCost() > altCost) {
-						traceNewPathFound(u, v, v.getCost(), altCost);
+					var altCost = u.cost() + edge.cost(); // cost of path (source, ..., u, v)
+					if (v.cost() > altCost) {
+						traceNewPathFound(u, v, v.cost(), altCost);
 						q.update(v, altCost);
 						v.setParent(u);
 					}
@@ -116,7 +116,7 @@ public class Graph<V extends Vertex> {
 			LOGGER.trace(() -> "Found path to %s (%.1f km) via %s".formatted(v, newCost, u));
 		} else {
 			LOGGER.trace(() -> "Found shorter path to %s (%.1f km instead of %.1f km) via %s instead via %s".formatted(v,
-					newCost, oldCost, u, v.getParent()));
+					newCost, oldCost, u, v.parent()));
 		}
 	}
 }

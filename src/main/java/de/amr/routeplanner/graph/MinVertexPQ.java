@@ -39,7 +39,7 @@ public class MinVertexPQ {
 	private PriorityQueue<Vertex> pq;
 
 	public MinVertexPQ() {
-		pq = new PriorityQueue<>((u, v) -> Float.compare(u.getCost(), v.getCost()));
+		pq = new PriorityQueue<>((u, v) -> Float.compare(u.cost(), v.cost()));
 	}
 
 	public boolean isEmpty() {
@@ -48,17 +48,17 @@ public class MinVertexPQ {
 
 	public Vertex extractMinCostVertex() {
 		var min = pq.poll();
-		LOGGER.trace(() -> "Extract min: %s (cost=%.1f)".formatted(min, min.getCost()));
+		LOGGER.trace(() -> "Extract min: %s (cost=%.1f)".formatted(min, min.cost()));
 		return min;
 	}
 
 	public void update(Vertex v, float cost) {
 		boolean removed = pq.remove(v);
 		if (removed) {
-			LOGGER.trace(() -> "Remove: %s (cost=%.1f)".formatted(v, v.getCost()));
+			LOGGER.trace(() -> "Remove: %s (cost=%.1f)".formatted(v, v.cost()));
 		}
 		v.setCost(cost);
 		pq.add(v);
-		LOGGER.trace(() -> "Add: %s (cost=%.1f)".formatted(v, v.getCost()));
+		LOGGER.trace(() -> "Add: %s (cost=%.1f)".formatted(v, v.cost()));
 	}
 }

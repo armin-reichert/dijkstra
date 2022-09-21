@@ -26,6 +26,7 @@ package de.amr.routeplanner.graph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
@@ -34,20 +35,20 @@ import java.util.stream.Stream;
 public class Vertex {
 
 	private List<Edge> adjEdges;
-	private final String key;
+	private final String id;
 	private Vertex parent;
 	private float cost;
 	private boolean visited;
 
-	public Vertex(String key) {
-		this.key = key;
+	public Vertex(String id) {
+		this.id = Objects.requireNonNull(id);
 	}
 
-	public String getKey() {
-		return key;
+	public String id() {
+		return id;
 	}
 
-	public Vertex getParent() {
+	public Vertex parent() {
 		return parent;
 	}
 
@@ -55,7 +56,7 @@ public class Vertex {
 		this.parent = parent;
 	}
 
-	public float getCost() {
+	public float cost() {
 		return cost;
 	}
 

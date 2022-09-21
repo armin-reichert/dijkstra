@@ -65,14 +65,14 @@ public class RoadMap extends Graph<RoadMapPoint> {
 			computeShortestPathsFrom(sourcePoint);
 		}
 		var route = new LinkedList<RoadMapPoint>();
-		for (RoadMapPoint v = goalPoint; v != null; v = (RoadMapPoint) v.getParent()) {
+		for (RoadMapPoint v = goalPoint; v != null; v = (RoadMapPoint) v.parent()) {
 			route.addFirst(v);
 		}
 		return route;
 	}
 
-	public RoadMapPoint createAndAddPoint(String key, String locationName, float latitude, float longitude) {
-		var point = new RoadMapPoint(Objects.requireNonNull(key), locationName, latitude, longitude);
+	public RoadMapPoint createAndAddPoint(String id, String locationName, float latitude, float longitude) {
+		var point = new RoadMapPoint(Objects.requireNonNull(id), locationName, latitude, longitude);
 		addVertex(point);
 		return point;
 	}
