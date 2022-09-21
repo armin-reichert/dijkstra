@@ -115,7 +115,7 @@ public class RoadMapReader {
 			LOGGER.error("Line %d: '%s': Invalid longitude: '%s'".formatted(lineNumber, line, tokens[3]));
 			return;
 		}
-		pointsByKey.put(key, map.getOrCreatePoint(name, latitude, longitude));
+		pointsByKey.put(key, map.createAndAddPoint(name, latitude, longitude));
 	}
 
 	private void parseRoad(String line) {

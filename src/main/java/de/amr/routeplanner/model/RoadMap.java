@@ -64,14 +64,10 @@ public class RoadMap extends Graph<String, RoadMapPoint> {
 		return route;
 	}
 
-	public RoadMapPoint getOrCreatePoint(String name, float latitude, float longitude) {
-		var v = vertex(name);
-		if (v.isPresent()) {
-			return v.get();
-		}
-		var p = new RoadMapPoint(name, latitude, longitude);
-		addVertex(name, p);
-		return p;
+	public RoadMapPoint createAndAddPoint(String name, float latitude, float longitude) {
+		var point = new RoadMapPoint(name, latitude, longitude);
+		addVertex(name, point);
+		return point;
 	}
 
 	public Stream<RoadMapPoint> points(Comparator<RoadMapPoint> order) {
