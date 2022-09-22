@@ -64,7 +64,7 @@ public class RoadMapReader {
 				if (line.startsWith("#") || line.isBlank()) {
 					// skip line
 				} else {
-					processLine(line, map);
+					processLine(line.trim(), map);
 				}
 			});
 		} catch (Exception x) {
@@ -74,9 +74,9 @@ public class RoadMapReader {
 	}
 
 	private void processLine(String line, RoadMap map) {
-		if (".locations".equals(line.trim())) {
+		if (".locations".equals(line)) {
 			state = STATE_READ_LOCATIONS;
-		} else if (".roads".equals(line.trim())) {
+		} else if (".roads".equals(line)) {
 			state = STATE_READ_ROADS;
 		} else if (state == STATE_READ_LOCATIONS) {
 			parseLocation(line, map);
@@ -86,7 +86,7 @@ public class RoadMapReader {
 	}
 
 	private void parseLocation(String line, RoadMap map) {
-		// (key, location name, latitude, longitude)
+		// <key> <location name> <latitude> <longitude>
 		String[] tokens = splitAndTrimCSV(line);
 		if (tokens.length != 4) {
 			LOGGER.error(() -> "Line %d: '%s': Invalid location spec".formatted(lineNumber, line));
@@ -112,7 +112,7 @@ public class RoadMapReader {
 	}
 
 	private void parseRoad(String line, RoadMap map) {
-		// from to cost
+		// <from> <to> <cost>
 		String[] tokens = splitAndTrimCSV(line);
 		if (tokens.length != 3) {
 			LOGGER.error(() -> "Line %d: '%s': Invalid road spec".formatted(lineNumber, line));
