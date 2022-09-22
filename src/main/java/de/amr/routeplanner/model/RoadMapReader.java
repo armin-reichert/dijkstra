@@ -49,44 +49,43 @@ public class RoadMapReader {
 	}
 
 	public static RoadMap readMap(InputStream is) {
-		return new RoadMapReader(is).map;
+		return new RoadMapReader().read(is);
 	}
 
-	private final RoadMap map;
 	private int state = STATE_READ;
 	private int lineNumber;
 
-	private RoadMapReader(InputStream is) {
-		map = new RoadMap();
+	private RoadMap read(InputStream is) {
 		lineNumber = 0;
-		try (InputStreamReader utf8 = new InputStreamReader(is, StandardCharsets.UTF_8);
-				BufferedReader rdr = new BufferedReader(utf8)) {
+		var map = new RoadMap();
+		try (var rdr = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
 			rdr.lines().forEach(line -> {
 				++lineNumber;
 				if (line.startsWith("#") || line.isBlank()) {
 					// skip line
 				} else {
-					processLine(line);
+					processLine(line, map);
 				}
 			});
 		} catch (Exception x) {
 			x.printStackTrace();
 		}
+		return map;
 	}
 
-	private void processLine(String line) {
+	private void processLine(String line, RoadMap map) {
 		if (".locations".equals(line.trim())) {
 			state = STATE_READ_LOCATIONS;
 		} else if (".roads".equals(line.trim())) {
 			state = STATE_READ_ROADS;
 		} else if (state == STATE_READ_LOCATIONS) {
-			parseLocation(line);
+			parseLocation(line, map);
 		} else if (state == STATE_READ_ROADS) {
-			parseRoad(line);
+			parseRoad(line, map);
 		}
 	}
 
-	private void parseLocation(String line) {
+	private void parseLocation(String line, RoadMap map) {
 		// (key, location name, latitude, longitude)
 		String[] tokens = splitAndTrimCSV(line);
 		if (tokens.length != 4) {
@@ -112,7 +111,7 @@ public class RoadMapReader {
 		map.createAndAddPoint(key, name, latitude, longitude);
 	}
 
-	private void parseRoad(String line) {
+	private void parseRoad(String line, RoadMap map) {
 		// from to cost
 		String[] tokens = splitAndTrimCSV(line);
 		if (tokens.length != 3) {
