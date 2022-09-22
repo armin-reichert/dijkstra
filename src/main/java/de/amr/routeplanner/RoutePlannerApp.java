@@ -79,6 +79,8 @@ public class RoutePlannerApp {
 		window.comboGoal().setModel(new DefaultComboBoxModel<>(locationNames));
 		window.listRoute().setModel(new DefaultListModel<>());
 		window.setMap(map);
+		window.comboStart().setSelectedItem("Losheim am See");
+		window.comboGoal().setSelectedItem("St. Ingbert");
 
 		window.listRoute().getActionMap().put("printAll", new AbstractAction() {
 			@Override
