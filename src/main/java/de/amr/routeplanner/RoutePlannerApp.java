@@ -25,7 +25,6 @@ SOFTWARE.
 package de.amr.routeplanner;
 
 import java.awt.event.ActionEvent;
-import java.util.List;
 import java.util.MissingResourceException;
 
 import javax.swing.AbstractAction;
@@ -40,7 +39,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.routeplanner.model.RoadMap;
-import de.amr.routeplanner.model.RoadMapPoint;
 import de.amr.routeplanner.model.RoadMapReader;
 import de.amr.routeplanner.ui.RoutePlannerWindow;
 
@@ -85,24 +83,9 @@ public class RoutePlannerApp {
 		window.listRoute().getActionMap().put("printAll", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				printAllRoutes();
+				map.printAllRoutes(LOGGER::info);
 			}
 		});
 		window.listRoute().getInputMap().put(KeyStroke.getKeyStroke('p'), "printAll");
-	}
-
-	private void printAllRoutes() {
-		map.print(LOGGER::info, RoadMap::orderedByLocationName);
-		var locationNames = map.locations().toArray(String[]::new);
-		for (var start : locationNames) {
-			for (var goal : locationNames) {
-				var route = map.computeRoute(start, goal);
-				LOGGER.info(() -> "%s nach %s: %s".formatted(start, goal, toStringList(route)));
-			}
-		}
-	}
-
-	private List<String> toStringList(List<RoadMapPoint> route) {
-		return route.stream().map(point -> "%s %.1f km".formatted(point.locationName(), point.cost())).toList();
 	}
 }

@@ -96,4 +96,19 @@ public class RoadMap extends Graph<RoadMapPoint> {
 		return "[%s -> %s %.1f km]".formatted(((RoadMapPoint) edge.from()).locationName(),
 				((RoadMapPoint) edge.to()).locationName(), edge.cost());
 	}
+
+	public void printAllRoutes(Consumer<String> printer) {
+		print(printer, RoadMap::orderedByLocationName);
+		var locationNames = locations().toArray(String[]::new);
+		for (var start : locationNames) {
+			for (var goal : locationNames) {
+				var route = computeRoute(start, goal);
+				printer.accept("%s nach %s: %s".formatted(start, goal, toStringList(route)));
+			}
+		}
+	}
+
+	private List<String> toStringList(List<RoadMapPoint> route) {
+		return route.stream().map(point -> "%s %.1f km".formatted(point.locationName(), point.cost())).toList();
+	}
 }
