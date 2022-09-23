@@ -24,8 +24,14 @@ SOFTWARE.
 
 package de.amr.routeplanner.graph;
 
+import java.util.Objects;
+
 /**
  * @author Armin Reichert
  */
 public record Edge(Vertex from, Vertex to, float cost) {
+	public Edge {
+		Objects.requireNonNull(from);
+		Objects.requireNonNull(to);
+	}
 }
