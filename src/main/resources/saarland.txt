@@ -41,6 +41,7 @@ nal, Nalbach, 49.378, 6.781
 nkr, Neunkirchen, 49.349, 7.177
 noh, Nohfelden, 49.587, 7.1425
 non, Nonnweiler, 49.608, 6.964
+otw, Ottweiler, 49.405, 7.162
 per, Perl, 49.473, 6.386
 rib, Riegelsberg, 49.304, 6.937
 sbr, Saarbrücken, 49.238, 6.997
@@ -130,6 +131,12 @@ non, wei, 15.5
 non, wad, 11.5
 non, tho, 19.5
 non, wnd, 30.0
+otw, wnd, 10.0
+otw, nkr, 8.5
+otw, mar, 13.5
+otw, ill, 12.0
+otw, mwl, 13.0
+otw, hom, 20.5
 rib, sbr, 12.0
 rib, sul, 13.0
 rib, vlk, 12.0
@@ -150,4 +157,3 @@ vlk, ueb, 18.5
 wad, tho, 19.5
 wad, wei, 6.5
 wnd, hom, 29.0
-wnd, nkr, 19.0
