@@ -31,6 +31,9 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.amr.routeplanner.graph.Edge;
 import de.amr.routeplanner.graph.Graph;
 import de.amr.routeplanner.graph.Vertex;
@@ -39,6 +42,8 @@ import de.amr.routeplanner.graph.Vertex;
  * @author Armin Reichert
  */
 public class RoadMap extends Graph<RoadMapPoint> {
+
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	public static int orderedByLocationName(RoadMapPoint u, RoadMapPoint v) {
 		return u.locationName().compareTo(v.locationName());
@@ -60,6 +65,7 @@ public class RoadMap extends Graph<RoadMapPoint> {
 		}
 		if (source != currentSource) {
 			currentSource = source;
+			LOGGER.info(() -> "*** Compute shortest paths from %s using Dijkstra's algorithm".formatted(currentSource));
 			computeShortestPathsFrom(currentSource);
 		}
 		var route = new LinkedList<RoadMapPoint>();

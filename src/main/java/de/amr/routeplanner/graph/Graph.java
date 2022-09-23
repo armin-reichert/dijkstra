@@ -46,9 +46,9 @@ public class Graph<V extends Vertex> {
 	public void addVertex(V vertex) {
 		if (vertex(vertex.id()).isPresent()) {
 			LOGGER.error(() -> "Vertex with ID '%s' already exists.".formatted(vertex.id()));
-			return;
+		} else {
+			vertexSet.add(vertex);
 		}
-		vertexSet.add(vertex);
 	}
 
 	public Optional<V> vertex(String id) {
@@ -86,7 +86,6 @@ public class Graph<V extends Vertex> {
 	 * @param source the source vertex
 	 */
 	public void computeShortestPathsFrom(Vertex source) {
-		LOGGER.info(() -> "*** Compute shortest paths from %s using Dijkstra's algorithm".formatted(source));
 		vertices().forEach(v -> {
 			v.setCost(Float.POSITIVE_INFINITY);
 			v.setParent(null);
