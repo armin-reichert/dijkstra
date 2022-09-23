@@ -64,7 +64,10 @@ public class RoadMapReader {
 				if (line.startsWith("#") || line.isBlank()) {
 					// skip line
 				} else {
-					processLine(line.trim(), map);
+					var success = processLine(line.trim(), map);
+					if (!success) {
+						LOGGER.error("Line '%s' could not be processed successfully".formatted(line));
+					}
 				}
 			});
 		} catch (Exception x) {
@@ -73,24 +76,28 @@ public class RoadMapReader {
 		return map;
 	}
 
-	private void processLine(String line, RoadMap map) {
+	private boolean processLine(String line, RoadMap map) {
+		var success = false;
 		if (".locations".equals(line)) {
 			state = STATE_READ_LOCATIONS;
+			success = true;
 		} else if (".roads".equals(line)) {
 			state = STATE_READ_ROADS;
+			success = true;
 		} else if (state == STATE_READ_LOCATIONS) {
-			parseLocation(line, map);
+			success = parseLocation(line, map);
 		} else if (state == STATE_READ_ROADS) {
-			parseRoad(line, map);
+			success = parseRoad(line, map);
 		}
+		return success;
 	}
 
-	private void parseLocation(String line, RoadMap map) {
+	private boolean parseLocation(String line, RoadMap map) {
 		// <key> <location name> <latitude> <longitude>
 		String[] tokens = splitAndTrimCSV(line);
 		if (tokens.length != 4) {
 			LOGGER.error(() -> "Line %d: '%s': Invalid location spec".formatted(lineNumber, line));
-			return;
+			return false;
 		}
 		String key = tokens[0];
 		String name = tokens[1];
@@ -99,42 +106,50 @@ public class RoadMapReader {
 			latitude = Float.parseFloat(tokens[2]);
 		} catch (NumberFormatException x) {
 			LOGGER.error("Line %d: '%s': Invalid latitude: '%s'".formatted(lineNumber, line, tokens[2]));
-			return;
+			return false;
 		}
 		float longitude = Float.parseFloat(tokens[3]);
 		try {
 			longitude = Float.parseFloat(tokens[3]);
 		} catch (NumberFormatException x) {
 			LOGGER.error("Line %d: '%s': Invalid longitude: '%s'".formatted(lineNumber, line, tokens[3]));
-			return;
+			return false;
 		}
-		map.createAndAddPoint(key, name, latitude, longitude);
+		try {
+			map.createAndAddPoint(key, name, latitude, longitude);
+			return true;
+		} catch (IllegalArgumentException x) {
+			LOGGER.error("Could not create road map point with key '%s' and name '%s'", key, name);
+			LOGGER.catching(x);
+			return false;
+		}
 	}
 
-	private void parseRoad(String line, RoadMap map) {
+	private boolean parseRoad(String line, RoadMap map) {
 		// <from> <to> <cost>
 		String[] tokens = splitAndTrimCSV(line);
 		if (tokens.length != 3) {
 			LOGGER.error(() -> "Line %d: '%s': Invalid road spec".formatted(lineNumber, line));
-			return;
+			return false;
 		}
 		var from = map.vertex(tokens[0]);
 		if (from.isEmpty()) {
 			LOGGER.error(() -> "Line %d: '%s': Undefined road start point: '%s'".formatted(lineNumber, line, tokens[0]));
-			return;
+			return false;
 		}
 		var to = map.vertex(tokens[1]);
 		if (to.isEmpty()) {
 			LOGGER.error(() -> "Line %d: '%s': Undefined road end point: '%s'".formatted(lineNumber, line, tokens[1]));
-			return;
+			return false;
 		}
 		float dist;
 		try {
 			dist = Float.parseFloat(tokens[2]);
 		} catch (NumberFormatException x) {
 			LOGGER.error("Line %d: '%s': Invalid distance: '%s'".formatted(lineNumber, line, tokens[2]));
-			return;
+			return false;
 		}
 		map.addEdge(from.get(), to.get(), dist);
+		return true;
 	}
 }

@@ -29,4 +29,13 @@ package de.amr.routeplanner.model;
  *
  */
 public record GeoCoord(float latitude, float longitude) {
+	// the so called "compact constructor"
+	public GeoCoord {
+		if (latitude < -90 || latitude > 90) {
+			throw new IllegalArgumentException("Latitude must be in range [-90, 90] but is %f".formatted(latitude));
+		}
+		if (longitude < -180 || longitude > 180) {
+			throw new IllegalArgumentException("Longitude must be in range [-180, 180] but is %f".formatted(longitude));
+		}
+	}
 }
