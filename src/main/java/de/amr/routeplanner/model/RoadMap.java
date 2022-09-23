@@ -103,12 +103,9 @@ public class RoadMap extends Graph<RoadMapPoint> {
 		for (var start : locationNames) {
 			for (var goal : locationNames) {
 				var route = computeRoute(start, goal);
-				printer.accept("%s nach %s: %s".formatted(start, goal, toStringList(route)));
+				var routeDesc = route.stream().map(p -> "%s %.1f km".formatted(p.locationName(), p.cost())).toList();
+				printer.accept("%s nach %s: %s".formatted(start, goal, routeDesc));
 			}
 		}
-	}
-
-	private List<String> toStringList(List<RoadMapPoint> route) {
-		return route.stream().map(point -> "%s %.1f km".formatted(point.locationName(), point.cost())).toList();
 	}
 }
