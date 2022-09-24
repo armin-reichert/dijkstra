@@ -38,9 +38,11 @@ met, Mettlach, 49.493, 6.593
 mwl, Merchweiler, 49.359, 7.063
 mzg, Merzig, 49.449, 6.643
 nal, Nalbach, 49.378, 6.781
+nam, Namborn, 49.522, 7.139
 nkr, Neunkirchen, 49.349, 7.177
 noh, Nohfelden, 49.587, 7.1425
 non, Nonnweiler, 49.608, 6.964
+obt, Oberthal, 49.512, 7.088
 otw, Ottweiler, 49.405, 7.162
 per, Perl, 49.473, 6.386
 rib, Riegelsberg, 49.304, 6.937
@@ -122,15 +124,21 @@ mzg, slz, 21.0
 mwl, nkr, 9.5
 nal, swl, 4.5
 nal, slz, 10.5
+nam, obt, 5.0
+nam, noh,  10.5
+nam, fre, 11.5
+nam, wnd, 10.0
 nkr, hom, 19.0
 nkr, spe, 6.5
-noh, wad, 27.0
 noh, non, 16.0
-noh, wnd, 18.0
 non, wei, 15.5
 non, wad, 11.5
 non, tho, 19.5
-non, wnd, 30.0
+obt, tho, 7.5
+obt, wad, 22.0
+obt, noh, 13.0
+obt, non, 21.0
+obt, wnd, 10.0
 otw, wnd, 10.0
 otw, nkr, 8.5
 otw, mar, 13.5
