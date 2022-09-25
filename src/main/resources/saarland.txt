@@ -1,21 +1,18 @@
-# Map data
+# Map data file
 # Comment lines start with hash symbol
-
+#
 # .locations starts the location section
 # A location is specified by the 4-tuple (key, location name, latitude (N), longitude (E))
-
+#
 # .roads starts the roads section
 # A road is specified by the triple (key of location 1, key of location 2, distance)
-
-# Sample for garbage line
-I am a garbage line (see log for error message)
+#
 
 .locations
 
 # Sample for wrong geo coordinate
-err1, Location with wrong longitude, 90.0, 187.2
-err2, Location with wrong latitude, -90.5, 7.2
-
+loc1, Location with wrong longitude, 90.0, 187.2
+loc2, Location with wrong latitude, -90.5, 7.2
 
 bec, Beckingen, 49.391, 6.705
 blk, Blieskastel, 49.238, 7.259

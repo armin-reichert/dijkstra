@@ -86,15 +86,16 @@ public class Graph<V extends Vertex> {
 	 * @param source the source vertex
 	 */
 	public void computeShortestPathsFrom(Vertex source) {
+		var q = new MinVertexPQ();
 		vertices().forEach(v -> {
 			v.setCost(Float.POSITIVE_INFINITY);
 			v.setParent(null);
 			v.setVisited(false);
 		});
-		var q = new MinVertexPQ();
-		q.update(source, 0);
+		source.setCost(0);
+		q.insert(source);
 		while (!q.isEmpty()) {
-			var u = q.extractMinCostVertex();
+			var u = q.extractMin();
 			if (!u.isVisited()) {
 				u.setVisited(true);
 				u.outgoingEdges().forEach(edge -> {
@@ -102,8 +103,10 @@ public class Graph<V extends Vertex> {
 					var altCost = u.cost() + edge.cost(); // cost of path (source, ..., u, v)
 					if (v.cost() > altCost) {
 						traceNewPathFound(u, v, v.cost(), altCost);
-						q.update(v, altCost);
+						q.remove(v); // if vertex not in queue, does nothing
+						v.setCost(altCost);
 						v.setParent(u);
+						q.insert(v);
 					}
 				});
 			}

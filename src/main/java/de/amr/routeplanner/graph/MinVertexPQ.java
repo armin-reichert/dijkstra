@@ -46,19 +46,21 @@ public class MinVertexPQ {
 		return pq.isEmpty();
 	}
 
-	public Vertex extractMinCostVertex() {
+	public Vertex extractMin() {
 		var min = pq.poll();
 		LOGGER.trace(() -> "Extract min: %s (cost=%.1f)".formatted(min, min.cost()));
 		return min;
 	}
 
-	public void update(Vertex v, float cost) {
+	public void insert(Vertex v) {
+		pq.add(v);
+		LOGGER.trace(() -> "Add: %s (cost=%.1f)".formatted(v, v.cost()));
+	}
+
+	public void remove(Vertex v) {
 		boolean removed = pq.remove(v);
 		if (removed) {
 			LOGGER.trace(() -> "Remove: %s (cost=%.1f)".formatted(v, v.cost()));
 		}
-		v.setCost(cost);
-		pq.add(v);
-		LOGGER.trace(() -> "Add: %s (cost=%.1f)".formatted(v, v.cost()));
 	}
 }
