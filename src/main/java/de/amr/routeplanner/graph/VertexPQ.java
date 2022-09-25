@@ -32,13 +32,13 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Armin Reichert
  */
-public class MinVertexPQ {
+public class VertexPQ {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private PriorityQueue<Vertex> pq;
 
-	public MinVertexPQ() {
+	public VertexPQ() {
 		pq = new PriorityQueue<>((u, v) -> Float.compare(u.cost(), v.cost()));
 	}
 

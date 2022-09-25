@@ -86,7 +86,7 @@ public class Graph<V extends Vertex> {
 	 * @param source the source vertex
 	 */
 	public void computeShortestPathsFrom(Vertex source) {
-		var q = new MinVertexPQ();
+		var q = new VertexPQ();
 		vertices().forEach(v -> {
 			v.setCost(Float.POSITIVE_INFINITY);
 			v.setParent(null);
