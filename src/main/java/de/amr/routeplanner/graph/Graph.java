@@ -102,7 +102,7 @@ public class Graph<V extends Vertex> {
 					var v = edge.to(); // edge = (u, v)
 					var altCost = u.cost() + edge.cost(); // cost of path (source, ..., u, v)
 					if (v.cost() > altCost) {
-						traceNewPathFound(u, v, v.cost(), altCost);
+						traceNewPathFound(u, v, altCost);
 						q.remove(v); // if vertex not in queue, does nothing
 						v.setCost(altCost);
 						v.setParent(u);
@@ -113,12 +113,12 @@ public class Graph<V extends Vertex> {
 		}
 	}
 
-	private void traceNewPathFound(Vertex u, Vertex v, float oldCost, float newCost) {
-		if (oldCost == Float.POSITIVE_INFINITY) {
+	private void traceNewPathFound(Vertex u, Vertex v, float newCost) {
+		if (v.cost() == Float.POSITIVE_INFINITY) {
 			LOGGER.trace(() -> "Found path to %s (%.1f km) via %s".formatted(v, newCost, u));
 		} else {
 			LOGGER.trace(() -> "Found shorter path to %s (%.1f km instead of %.1f km) via %s instead via %s".formatted(v,
-					newCost, oldCost, u, v.parent()));
+					newCost, v.cost(), u, v.parent()));
 		}
 	}
 }
