@@ -43,6 +43,7 @@ non, Nonnweiler, 49.608, 6.964
 obt, Oberthal, 49.512, 7.088
 otw, Ottweiler, 49.405, 7.162
 per, Perl, 49.473, 6.386
+qsd, Quierschied, 49.325, 7.049
 rib, Riegelsberg, 49.304, 6.937
 sbr, Saarbrücken, 49.238, 6.997
 sib, Siersburg, 49.365, 6.668
@@ -148,6 +149,11 @@ otw, mar, 13.5
 otw, ill, 12.0
 otw, mwl, 13.0
 otw, hom, 20.5
+qsd, mwl, 6.5 
+qsd, fth, 5.0
+qsd, sul, 7.0
+qsd, rib, 14.0
+qsd, heu, 11.0
 rib, sbr, 12.0
 rib, sul, 13.0
 rib, vlk, 12.0
