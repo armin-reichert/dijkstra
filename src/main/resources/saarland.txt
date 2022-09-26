@@ -27,6 +27,7 @@ hom, Homburg, 49.329, 7.339
 igb, St. Ingbert, 49.278, 7.112
 ill, Illingen, 49.374, 7.048
 klb, Kleinblittersdorf, 49.157, 7.035
+kir, Kirkel, 49.285, 7.228
 leb, Lebach, 49.41, 6.91
 los, Losheim am See, 49.51, 6.75
 man, Mandelbachtal, 49.197, 7.18
@@ -95,6 +96,11 @@ igb, hom, 22.0
 igb, spe, 5.0
 igb, sul, 7.0
 ill, mwl, 3.0
+kir, hom, 10.0
+kir, nkr, 11.0
+kir, spe, 11.0
+kir, igb, 10.5
+kir, blk, 6.5
 klb, sbr, 11.5
 klb, man, 18.5
 klb, ger, 19.0
