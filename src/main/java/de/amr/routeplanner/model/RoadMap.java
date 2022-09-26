@@ -55,6 +55,18 @@ public class RoadMap extends Graph<RoadMapPoint> {
 		return pointsOrderedByLocationName().filter(p -> p.locationName().equals(location)).findFirst().orElse(null);
 	}
 
+	@Override
+	protected void traceNewPathFound(Vertex u, Vertex v, float newCost) {
+		RoadMapPoint pu = (RoadMapPoint) u;
+		RoadMapPoint pv = (RoadMapPoint) v;
+		if (pv.cost() == Float.POSITIVE_INFINITY) {
+			LOGGER.trace(() -> "First path to %s (%.1f km) via %s".formatted(pv.locationName(), newCost, pu.locationName()));
+		} else {
+			LOGGER.trace(() -> "Shorter path to %s (%.1f km via %s instead of %.1f km via %s)".formatted(pv.locationName(),
+					newCost, pu.locationName(), pv.cost(), ((RoadMapPoint) pv.parent()).locationName()));
+		}
+	}
+
 	public List<RoadMapPoint> computeRoute(String sourceLocation, String goalLocation) {
 		return computeRoute(findPoint(sourceLocation), findPoint(goalLocation));
 	}

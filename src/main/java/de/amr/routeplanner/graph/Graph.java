@@ -113,12 +113,7 @@ public class Graph<V extends Vertex> {
 		}
 	}
 
-	private void traceNewPathFound(Vertex u, Vertex v, float newCost) {
-		if (v.cost() == Float.POSITIVE_INFINITY) {
-			LOGGER.trace(() -> "Found path to %s (%.1f km) via %s".formatted(v, newCost, u));
-		} else {
-			LOGGER.trace(() -> "Found shorter path to %s (%.1f km instead of %.1f km) via %s instead via %s".formatted(v,
-					newCost, v.cost(), u, v.parent()));
-		}
+	protected void traceNewPathFound(Vertex u, Vertex v, float newCost) {
+		// subclass may override
 	}
 }
