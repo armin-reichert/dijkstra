@@ -71,6 +71,10 @@ public class Graph<V extends Vertex> {
 		return vertices().flatMap(Vertex::outgoingEdges);
 	}
 
+	public int numEdges() {
+		return (int) edges().count();
+	}
+
 	public void addEdge(V either, V other, float cost) {
 		addDirectedEdge(either, other, cost);
 		addDirectedEdge(other, either, cost);
@@ -78,6 +82,10 @@ public class Graph<V extends Vertex> {
 
 	public void addDirectedEdge(V source, V target, float cost) {
 		source.addOutgoingEdge(target, cost);
+	}
+
+	public Optional<Edge> edge(V from, V to) {
+		return from.outgoingEdges().filter(e -> e.to().equals(to)).findAny();
 	}
 
 	/**

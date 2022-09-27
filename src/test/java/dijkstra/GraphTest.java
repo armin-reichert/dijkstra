@@ -54,4 +54,29 @@ public class GraphTest {
 		Assert.assertTrue(g.vertex("a").isPresent());
 		Assert.assertEquals(2, g.numVertices());
 	}
+
+	@Test
+	public void testAddEdges() {
+		var a = new Vertex("A");
+		var b = new Vertex("B");
+		var c = new Vertex("C");
+		g.addVertex(a);
+		g.addVertex(b);
+		g.addVertex(c);
+		Assert.assertEquals(0, g.numEdges());
+
+		g.addDirectedEdge(a, b, 0);
+		Assert.assertTrue(g.edge(a, b).isPresent());
+		Assert.assertEquals(1, g.numEdges());
+
+		g.addDirectedEdge(b, c, 0);
+		Assert.assertTrue(g.edge(b, c).isPresent());
+		Assert.assertEquals(2, g.numEdges());
+
+		g.addDirectedEdge(c, a, 0);
+		Assert.assertTrue(g.edge(c, a).isPresent());
+		Assert.assertEquals(3, g.numEdges());
+
+		Assert.assertFalse(g.edge(c, b).isPresent());
+	}
 }
