@@ -79,4 +79,21 @@ public class GraphTest {
 
 		Assert.assertFalse(g.edge(c, b).isPresent());
 	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testAddDuplicateVertex() {
+		var a = new Vertex("A");
+		g.addVertex(a);
+		g.addVertex(a);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testAddDuplicateEdge() {
+		var a = new Vertex("A");
+		var b = new Vertex("B");
+		g.addVertex(a);
+		g.addVertex(b);
+		g.addDirectedEdge(a, b, 0);
+		g.addDirectedEdge(a, b, 0);
+	}
 }

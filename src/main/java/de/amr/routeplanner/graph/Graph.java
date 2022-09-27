@@ -29,9 +29,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
  * @author Armin Reichert
  * 
@@ -39,16 +36,13 @@ import org.apache.logging.log4j.Logger;
  */
 public class Graph<V extends Vertex> {
 
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
-
 	private final Set<V> vertexSet = new HashSet<>();
 
 	public void addVertex(V vertex) {
 		if (vertex(vertex.id()).isPresent()) {
-			LOGGER.error(() -> "Vertex with ID '%s' already exists.".formatted(vertex.id()));
-		} else {
-			vertexSet.add(vertex);
+			throw new IllegalArgumentException("Vertex with ID '%s' already exists.".formatted(vertex.id()));
 		}
+		vertexSet.add(vertex);
 	}
 
 	public Optional<V> vertex(String id) {
@@ -80,8 +74,11 @@ public class Graph<V extends Vertex> {
 		addDirectedEdge(other, either, cost);
 	}
 
-	public void addDirectedEdge(V source, V target, float cost) {
-		source.addOutgoingEdge(target, cost);
+	public void addDirectedEdge(V from, V to, float cost) {
+		if (edge(from, to).isPresent()) {
+			throw new IllegalArgumentException("Duplicate edge (%s, %s)".formatted(from.id(), to.id()));
+		}
+		from.addOutgoingEdge(to, cost);
 	}
 
 	public Optional<Edge> edge(V from, V to) {
