@@ -79,7 +79,7 @@ public class Graph<V extends Vertex> {
 	/**
 	 * Computes the shortest path from the given source vertex to all vertices of the graph.
 	 * <p>
-	 * TODO: I am not sure if using "visited" is really needed
+	 * TODO: Not sure if using "visited" and if removing vertices from queue are needed
 	 * 
 	 * @see https://cs.au.dk/~gerth/papers/fun22.pdf
 	 * 
