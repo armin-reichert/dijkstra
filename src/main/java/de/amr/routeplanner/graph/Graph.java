@@ -63,6 +63,10 @@ public class Graph<V extends Vertex> {
 		return vertexSet.stream();
 	}
 
+	public int numVertices() {
+		return vertexSet.size();
+	}
+
 	public Stream<Edge> edges() {
 		return vertices().flatMap(Vertex::outgoingEdges);
 	}
