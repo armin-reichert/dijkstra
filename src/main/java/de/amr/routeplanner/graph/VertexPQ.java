@@ -43,22 +43,22 @@ public class VertexPQ {
 	}
 
 	public boolean isEmpty() {
-		return pq.isEmpty();
+		return pq.isEmpty(); // constant time
 	}
 
 	public Vertex extractMin() {
-		var min = pq.poll();
+		var min = pq.poll(); // log(n) time
 		LOGGER.trace(() -> "Extract min: %s (cost=%.1f)".formatted(min, min.cost()));
 		return min;
 	}
 
 	public void insert(Vertex v) {
-		pq.add(v);
+		pq.add(v); // log(n) time
 		LOGGER.trace(() -> "Add: %s (cost=%.1f)".formatted(v, v.cost()));
 	}
 
 	public void remove(Vertex v) {
-		boolean removed = pq.remove(v);
+		boolean removed = pq.remove(v); // O(n) time
 		if (removed) {
 			LOGGER.trace(() -> "Remove: %s (cost=%.1f)".formatted(v, v.cost()));
 		}
