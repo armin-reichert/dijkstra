@@ -26,6 +26,7 @@ package de.amr.routeplanner.graph;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -39,7 +40,9 @@ public class Graph<V extends Vertex> {
 	private final Map<String, V> vertexByID = new HashMap<>();
 
 	public void addVertex(String id, V vertex) {
-		if (vertex(id).isPresent()) {
+		Objects.requireNonNull(id);
+		Objects.requireNonNull(vertex);
+		if (vertexByID.containsKey(id)) {
 			throw new IllegalArgumentException("Vertex with ID '%s' already exists.".formatted(id));
 		}
 		vertexByID.put(id, vertex);
@@ -47,10 +50,6 @@ public class Graph<V extends Vertex> {
 
 	public Optional<V> vertex(String id) {
 		return Optional.ofNullable(vertexByID.get(id));
-	}
-
-	public boolean contains(V vertex) {
-		return vertexByID.values().contains(vertex);
 	}
 
 	public Stream<V> vertices() {
@@ -83,46 +82,5 @@ public class Graph<V extends Vertex> {
 
 	public Optional<Edge> edge(V from, V to) {
 		return from.outgoingEdges().filter(e -> e.to().equals(to)).findAny();
-	}
-
-	/**
-	 * Computes the shortest path from the given source vertex to all vertices of the graph.
-	 * <p>
-	 * TODO: Not sure if using "visited" and if removing vertices from queue are needed
-	 * 
-	 * @see https://cs.au.dk/~gerth/papers/fun22.pdf
-	 * 
-	 * @param source the source vertex
-	 */
-	public void computeShortestPathsFrom(Vertex source) {
-		var q = new VertexPQ();
-		vertices().forEach(v -> {
-			v.setCost(Float.POSITIVE_INFINITY);
-			v.setParent(null);
-			v.setVisited(false);
-		});
-		source.setCost(0);
-		q.insert(source);
-		while (!q.isEmpty()) {
-			var u = q.extractMin();
-			if (!u.isVisited()) {
-				u.setVisited(true);
-				u.outgoingEdges().forEach(edge -> {
-					var v = edge.to(); // edge = (u, v)
-					var altCost = u.cost() + edge.cost(); // cost of path (source, ..., u, v)
-					if (v.cost() > altCost) {
-						traceNewPathFound(u, v, altCost);
-						q.remove(v); // if vertex not in queue, does nothing
-						v.setCost(altCost);
-						v.setParent(u);
-						q.insert(v);
-					}
-				});
-			}
-		}
-	}
-
-	protected void traceNewPathFound(Vertex u, Vertex v, float newCost) {
-		// subclass may override
 	}
 }

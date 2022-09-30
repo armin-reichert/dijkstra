@@ -24,6 +24,8 @@ SOFTWARE.
 
 package de.amr.routeplanner.model;
 
+import static de.amr.routeplanner.graph.Algorithms.computeShortestPathsFrom;
+
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,10 +57,9 @@ public class RoadMap extends Graph<RoadMapPoint> {
 		return pointsOrderedByLocationName().filter(p -> p.locationName().equals(location)).findFirst().orElse(null);
 	}
 
-	@Override
-	protected void traceNewPathFound(Vertex u, Vertex v, float newCost) {
-		RoadMapPoint pu = (RoadMapPoint) u;
-		RoadMapPoint pv = (RoadMapPoint) v;
+	private void traceNewPathFound(Edge edge, float newCost) {
+		RoadMapPoint pu = (RoadMapPoint) edge.from();
+		RoadMapPoint pv = (RoadMapPoint) edge.to();
 		if (pv.cost() == Float.POSITIVE_INFINITY) {
 			LOGGER.trace(() -> "First path to %s (%.1f km) via %s".formatted(pv.locationName(), newCost, pu.locationName()));
 		} else {
@@ -78,7 +79,7 @@ public class RoadMap extends Graph<RoadMapPoint> {
 		if (source != currentSource) {
 			currentSource = source;
 			LOGGER.info(() -> "*** Compute shortest paths from %s using Dijkstra's algorithm".formatted(currentSource));
-			computeShortestPathsFrom(currentSource);
+			computeShortestPathsFrom(this, currentSource, this::traceNewPathFound);
 		}
 		var route = new LinkedList<RoadMapPoint>();
 		for (RoadMapPoint v = goal; v != null; v = (RoadMapPoint) v.parent()) {
