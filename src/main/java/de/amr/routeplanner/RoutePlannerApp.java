@@ -39,6 +39,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.routeplanner.model.RoadMap;
+import de.amr.routeplanner.model.RoadMapPathFinder;
 import de.amr.routeplanner.model.RoadMapReader;
 import de.amr.routeplanner.ui.RoutePlannerWindow;
 
@@ -55,6 +56,7 @@ public class RoutePlannerApp {
 	}
 
 	private RoadMap map;
+	private RoadMapPathFinder pathFinder;
 
 	public RoutePlannerApp(String mapFile) {
 		var resource = getClass().getResourceAsStream("/" + mapFile);
@@ -63,6 +65,7 @@ public class RoutePlannerApp {
 					RoutePlannerApp.class.getName(), mapFile);
 		}
 		map = RoadMapReader.readMap(resource);
+		pathFinder = new RoadMapPathFinder();
 	}
 
 	private void createAndShowUI() {
@@ -76,14 +79,14 @@ public class RoutePlannerApp {
 		window.comboStart().setModel(new DefaultComboBoxModel<>(locationNames));
 		window.comboGoal().setModel(new DefaultComboBoxModel<>(locationNames));
 		window.listRoute().setModel(new DefaultListModel<>());
-		window.setMap(map);
+		window.setMap(map, pathFinder);
 		window.comboStart().setSelectedItem("Losheim am See");
 		window.comboGoal().setSelectedItem("St. Ingbert");
 
 		window.listRoute().getActionMap().put("printAll", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				map.printAllRoutes(LOGGER::info);
+				pathFinder.printAllRoutes(map, LOGGER::info);
 			}
 		});
 		window.listRoute().getInputMap().put(KeyStroke.getKeyStroke('p'), "printAll");

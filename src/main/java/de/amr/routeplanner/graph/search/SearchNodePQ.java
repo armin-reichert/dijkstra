@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.routeplanner.graph;
+package de.amr.routeplanner.graph.search;
 
 import java.util.PriorityQueue;
 
@@ -32,35 +32,35 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Armin Reichert
  */
-public class VertexPQ {
+public class SearchNodePQ {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private PriorityQueue<Vertex> pq;
+	private PriorityQueue<SearchNode> pq;
 
-	public VertexPQ() {
-		pq = new PriorityQueue<>((u, v) -> Float.compare(u.cost(), v.cost()));
+	public SearchNodePQ() {
+		pq = new PriorityQueue<>((u, v) -> Float.compare(u.cost, v.cost));
 	}
 
 	public boolean isEmpty() {
 		return pq.isEmpty(); // constant time
 	}
 
-	public Vertex extractMin() {
+	public SearchNode extractMin() {
 		var min = pq.poll(); // log(n) time
-		LOGGER.trace(() -> "Extract min: %s (cost=%.1f)".formatted(min, min.cost()));
+		LOGGER.trace(() -> "Extract min: %s (cost=%.1f)".formatted(min, min.cost));
 		return min;
 	}
 
-	public void insert(Vertex v) {
+	public void insert(SearchNode v) {
 		pq.add(v); // log(n) time
-		LOGGER.trace(() -> "Add: %s (cost=%.1f)".formatted(v, v.cost()));
+		LOGGER.trace(() -> "Add: %s (cost=%.1f)".formatted(v, v.cost));
 	}
 
-	public void remove(Vertex v) {
+	public void remove(SearchNode v) {
 		boolean removed = pq.remove(v); // O(n) time
 		if (removed) {
-			LOGGER.trace(() -> "Remove: %s (cost=%.1f)".formatted(v, v.cost()));
+			LOGGER.trace(() -> "Remove: %s (cost=%.1f)".formatted(v, v.cost));
 		}
 	}
 }

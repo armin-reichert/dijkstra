@@ -22,27 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.routeplanner.graph;
+package de.amr.routeplanner.graph.search;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
+import de.amr.routeplanner.graph.Vertex;
 
-/**
- * @author Armin Reichert
- */
-public class Vertex {
+public class SearchNode {
+	public final Vertex vertex;
+	public SearchNode parent;
+	public float cost;
+	public boolean visited;
 
-	private List<Edge> adjEdges;
-
-	public void addOutgoingEdge(Vertex to, float cost) {
-		if (adjEdges == null) {
-			adjEdges = new ArrayList<>(3);
-		}
-		adjEdges.add(new Edge(this, to, cost));
-	}
-
-	public Stream<Edge> outgoingEdges() {
-		return adjEdges == null ? Stream.empty() : adjEdges.stream();
+	public SearchNode(Vertex vertex) {
+		this.vertex = vertex;
 	}
 }

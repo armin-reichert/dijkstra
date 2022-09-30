@@ -22,14 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.routeplanner.graph;
+package de.amr.routeplanner.graph.search;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiConsumer;
+
+import de.amr.routeplanner.graph.Edge;
+import de.amr.routeplanner.graph.Graph;
+import de.amr.routeplanner.graph.Vertex;
 
 /**
  * @author Armin Reichert
  */
-public interface Algorithms {
+public class ShortestPathFinder {
+
+	private final Map<Vertex, SearchNode> nodes = new HashMap<>();
+
+	public SearchNode node(Vertex v) {
+		return nodes.get(v);
+	}
+
 	/**
 	 * Computes the shortest path from the given source vertex to all vertices of the graph.
 	 * <p>
@@ -38,30 +51,34 @@ public interface Algorithms {
 	 * @see https://cs.au.dk/~gerth/papers/fun22.pdf
 	 * 
 	 * @param g              a graph with non-negative edge weights
-	 * @param source         the source vertex
+	 * @param sourceVertex   the source vertex
 	 * @param onNewPathFound callback function, may be used for tracing
 	 */
-	public static void computeShortestPathsFrom(Graph<?> g, Vertex source, BiConsumer<Edge, Float> onNewPathFound) {
-		var q = new VertexPQ();
+	public void computeShortestPathsFrom(Graph<?> g, Vertex sourceVertex, BiConsumer<Edge, Float> onNewPathFound) {
+		nodes.clear();
 		g.vertices().forEach(v -> {
-			v.setCost(Float.POSITIVE_INFINITY);
-			v.setParent(null);
-			v.setVisited(false);
+			var node = new SearchNode(v);
+			nodes.put(v, node);
+			node.cost = Float.POSITIVE_INFINITY;
+			node.parent = null;
+			node.visited = false;
 		});
-		source.setCost(0);
+		var q = new SearchNodePQ();
+		var source = node(sourceVertex);
+		source.cost = 0;
 		q.insert(source);
 		while (!q.isEmpty()) {
 			var u = q.extractMin();
-			if (!u.isVisited()) {
-				u.setVisited(true);
-				u.outgoingEdges().forEach(edge -> {
-					var v = edge.to(); // edge = (u, v)
-					var altCost = u.cost() + edge.cost(); // cost of path (source, ..., u, v)
-					if (v.cost() > altCost) {
+			if (!u.visited) {
+				u.visited = true;
+				u.vertex.outgoingEdges().forEach(edge -> {
+					var v = node(edge.to()); // edge = (u.vertex, v.vertex)
+					var altCost = u.cost + edge.cost(); // cost of path (source, ..., u, v)
+					if (v.cost > altCost) {
 						onNewPathFound.accept(edge, altCost);
 						q.remove(v); // if vertex not in queue, does nothing
-						v.setCost(altCost);
-						v.setParent(u);
+						v.cost = altCost;
+						v.parent = u;
 						q.insert(v);
 					}
 				});
@@ -69,7 +86,7 @@ public interface Algorithms {
 		}
 	}
 
-	public static void computeShortestPathsFrom(Graph<?> g, Vertex source) {
+	public void computeShortestPathsFrom(Graph<?> g, Vertex source) {
 		computeShortestPathsFrom(g, source, (edge, cost) -> {
 		});
 	}

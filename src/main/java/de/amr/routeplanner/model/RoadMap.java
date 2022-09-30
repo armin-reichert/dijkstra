@@ -24,17 +24,10 @@ SOFTWARE.
 
 package de.amr.routeplanner.model;
 
-import static de.amr.routeplanner.graph.Algorithms.computeShortestPathsFrom;
-
 import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import de.amr.routeplanner.graph.Edge;
 import de.amr.routeplanner.graph.Graph;
@@ -45,47 +38,12 @@ import de.amr.routeplanner.graph.Vertex;
  */
 public class RoadMap extends Graph<RoadMapPoint> {
 
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
-
 	public static int orderedByLocationName(RoadMapPoint u, RoadMapPoint v) {
 		return u.locationName().compareTo(v.locationName());
 	}
 
-	private RoadMapPoint currentSource;
-
-	private RoadMapPoint findPoint(String location) {
+	public RoadMapPoint findPoint(String location) {
 		return pointsOrderedByLocationName().filter(p -> p.locationName().equals(location)).findFirst().orElse(null);
-	}
-
-	private void traceNewPathFound(Edge edge, float newCost) {
-		RoadMapPoint pu = (RoadMapPoint) edge.from();
-		RoadMapPoint pv = (RoadMapPoint) edge.to();
-		if (pv.cost() == Float.POSITIVE_INFINITY) {
-			LOGGER.trace(() -> "First path to %s (%.1f km) via %s".formatted(pv.locationName(), newCost, pu.locationName()));
-		} else {
-			LOGGER.trace(() -> "Shorter path to %s (%.1f km via %s instead of %.1f km via %s)".formatted(pv.locationName(),
-					newCost, pu.locationName(), pv.cost(), ((RoadMapPoint) pv.parent()).locationName()));
-		}
-	}
-
-	public List<RoadMapPoint> computeRoute(String sourceLocation, String goalLocation) {
-		return computeRoute(findPoint(sourceLocation), findPoint(goalLocation));
-	}
-
-	public List<RoadMapPoint> computeRoute(RoadMapPoint source, RoadMapPoint goal) {
-		if (source == null || goal == null) {
-			return List.of();
-		}
-		if (source != currentSource) {
-			currentSource = source;
-			LOGGER.info(() -> "*** Compute shortest paths from %s using Dijkstra's algorithm".formatted(currentSource));
-			computeShortestPathsFrom(this, currentSource, this::traceNewPathFound);
-		}
-		var route = new LinkedList<RoadMapPoint>();
-		for (RoadMapPoint v = goal; v != null; v = (RoadMapPoint) v.parent()) {
-			route.addFirst(v);
-		}
-		return route;
 	}
 
 	public RoadMapPoint createAndAddPoint(String id, String location, float latitude, float longitude) {
@@ -114,16 +72,5 @@ public class RoadMap extends Graph<RoadMapPoint> {
 	private static String edgeToString(Edge edge) {
 		return "[%s -> %s %.1f km]".formatted(((RoadMapPoint) edge.from()).locationName(),
 				((RoadMapPoint) edge.to()).locationName(), edge.cost());
-	}
-
-	public void printAllRoutes(Consumer<String> printer) {
-		print(printer, RoadMap::orderedByLocationName);
-		locations().forEach(start -> {
-			locations().forEach(goal -> {
-				var route = computeRoute(start, goal);
-				var routeDesc = route.stream().map(p -> "%s %.1f km".formatted(p.locationName(), p.cost())).toList();
-				printer.accept("%s nach %s: %s".formatted(start, goal, routeDesc));
-			});
-		});
 	}
 }

@@ -53,6 +53,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.routeplanner.model.GeoCoord;
 import de.amr.routeplanner.model.RoadMap;
+import de.amr.routeplanner.model.RoadMapPathFinder;
 import de.amr.routeplanner.model.RoadMapPoint;
 import net.miginfocom.swing.MigLayout;
 
@@ -77,8 +78,9 @@ public class RoutePlannerWindow extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			String start = (String) comboStart().getSelectedItem();
 			String goal = (String) comboGoal().getSelectedItem();
-			var route = map.computeRoute(start, goal);
-			var sections = route.stream().map(p -> "%s %.1f km".formatted(p.locationName(), p.cost())).toList();
+			var route = pathFinder.computeRoute(map, start, goal);
+			var sections = route.stream().map(p -> "%s %.1f km".formatted(p.locationName(), pathFinder.node(p).cost))
+					.toList();
 			var data = new DefaultListModel<String>();
 			data.addAll(sections);
 			listRoute().setModel(data);
@@ -87,6 +89,7 @@ public class RoutePlannerWindow extends JFrame {
 	};
 
 	private RoadMap map;
+	private RoadMapPathFinder pathFinder;
 	private JComboBox<String> comboStart;
 	private JComboBox<String> comboGoal;
 	private JList<String> listRoute;
@@ -164,8 +167,9 @@ public class RoutePlannerWindow extends JFrame {
 		});
 	}
 
-	public void setMap(RoadMap map) {
+	public void setMap(RoadMap map, RoadMapPathFinder pathFinder) {
 		this.map = Objects.requireNonNull(map);
+		this.pathFinder = pathFinder;
 		mapImage.setOnRepaint(this::onRepaint);
 	}
 
@@ -251,7 +255,7 @@ public class RoutePlannerWindow extends JFrame {
 	public void drawRoute(Graphics2D g) {
 		String start = (String) comboStart().getSelectedItem();
 		String goal = (String) comboGoal().getSelectedItem();
-		var route = map.computeRoute(start, goal);
+		var route = pathFinder.computeRoute(map, start, goal);
 		g.setColor(Color.RED);
 		g.setStroke(new BasicStroke(1f));
 		for (int i = 0; i < route.size(); ++i) {
