@@ -56,7 +56,7 @@ public class RoadMapPathFinder extends ShortestPathFinder {
 	}
 
 	public List<RoadMapPoint> computeRoute(RoadMap map, String sourceLocation, String goalLocation) {
-		return computeRoute(map, map.findPoint(sourceLocation), map.findPoint(goalLocation));
+		return computeRoute(map, map.point(sourceLocation).orElse(null), map.point(goalLocation).orElse(null));
 	}
 
 	public List<RoadMapPoint> computeRoute(RoadMap map, RoadMapPoint source, RoadMapPoint goal) {
@@ -77,13 +77,12 @@ public class RoadMapPathFinder extends ShortestPathFinder {
 
 	public void printAllRoutes(RoadMap map, Consumer<String> printer) {
 		map.print(printer, RoadMap::orderedByLocationName);
-		map.locations().forEach(start -> {
-			map.locations().forEach(goal -> {
+		map.locationNames().forEach(start -> {
+			map.locationNames().forEach(goal -> {
 				var route = computeRoute(map, start, goal);
 				var routeDesc = route.stream().map(p -> "%s %.1f km".formatted(p.locationName(), node(p).cost)).toList();
 				printer.accept("%s nach %s: %s".formatted(start, goal, routeDesc));
 			});
 		});
 	}
-
 }

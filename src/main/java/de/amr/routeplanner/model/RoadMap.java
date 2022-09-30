@@ -26,6 +26,7 @@ package de.amr.routeplanner.model;
 
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -42,8 +43,8 @@ public class RoadMap extends Graph<RoadMapPoint> {
 		return u.locationName().compareTo(v.locationName());
 	}
 
-	public RoadMapPoint findPoint(String location) {
-		return pointsOrderedByLocationName().filter(p -> p.locationName().equals(location)).findFirst().orElse(null);
+	public Optional<RoadMapPoint> point(String location) {
+		return vertices().filter(p -> p.locationName().equals(location)).findFirst();
 	}
 
 	public RoadMapPoint createAndAddPoint(String id, String location, float latitude, float longitude) {
@@ -52,21 +53,17 @@ public class RoadMap extends Graph<RoadMapPoint> {
 		return point;
 	}
 
-	public Stream<RoadMapPoint> points(Comparator<RoadMapPoint> ordering) {
-		return vertices().map(RoadMapPoint.class::cast).sorted(ordering);
-	}
-
 	public Stream<RoadMapPoint> pointsOrderedByLocationName() {
-		return points(RoadMap::orderedByLocationName);
+		return vertices().sorted(RoadMap::orderedByLocationName);
 	}
 
-	public Stream<String> locations() {
+	public Stream<String> locationNames() {
 		return pointsOrderedByLocationName().map(RoadMapPoint::locationName);
 	}
 
 	public void print(Consumer<String> printer, Comparator<RoadMapPoint> order) {
-		points(order).map(RoadMapPoint::toString).forEach(printer::accept);
-		points(order).flatMap(Vertex::outgoingEdges).map(RoadMap::edgeToString).forEach(printer::accept);
+		vertices().sorted(order).map(RoadMapPoint::toString).forEach(printer::accept);
+		vertices().sorted(order).flatMap(Vertex::outgoingEdges).map(RoadMap::edgeToString).forEach(printer::accept);
 	}
 
 	private static String edgeToString(Edge edge) {
