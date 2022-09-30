@@ -41,4 +41,9 @@ public class SearchNode {
 		this.cost = Float.POSITIVE_INFINITY;
 		this.visited = false;
 	}
+
+	@Override
+	public String toString() {
+		return "[vertex=%s cost=%.2f visited=%s]".formatted(vertex, cost, visited);
+	}
 }

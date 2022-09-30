@@ -48,19 +48,19 @@ public class SearchNodePQ {
 
 	public SearchNode extractMin() {
 		var min = pq.poll(); // log(n) time
-		LOGGER.trace(() -> "Extract min: %s (cost=%.1f)".formatted(min, min.cost));
+		LOGGER.trace(() -> "Extract min: %s".formatted(min));
 		return min;
 	}
 
 	public void insert(SearchNode v) {
 		pq.add(v); // log(n) time
-		LOGGER.trace(() -> "Add: %s (cost=%.1f)".formatted(v, v.cost));
+		LOGGER.trace(() -> "Add: %s".formatted(v));
 	}
 
 	public void remove(SearchNode v) {
 		boolean removed = pq.remove(v); // O(n) time
 		if (removed) {
-			LOGGER.trace(() -> "Remove: %s (cost=%.1f)".formatted(v, v.cost));
+			LOGGER.trace(() -> "Remove: %s".formatted(v));
 		}
 	}
 }
