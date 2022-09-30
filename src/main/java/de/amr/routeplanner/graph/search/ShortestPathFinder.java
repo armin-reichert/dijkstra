@@ -37,16 +37,17 @@ import de.amr.routeplanner.graph.Vertex;
  */
 public class ShortestPathFinder {
 
-	private final Map<Vertex, SearchNode> nodes = new HashMap<>();
+	private SearchNodePQ q;
+	private Map<Vertex, SearchNode> nodes;
 
 	public SearchNode node(Vertex v) {
 		return nodes.get(v);
 	}
 
 	/**
-	 * Computes the shortest path from the given source vertex to all vertices of the graph.
+	 * Computes the shortest path from the given source vertex to all vertices of the graph using Dijkstra's algorithm.
 	 * <p>
-	 * TODO: Not sure if using "visited" and if removing vertices from queue are needed
+	 * TODO: Not sure if using "visited" and if removing vertices from queue are really needed
 	 * 
 	 * @see https://cs.au.dk/~gerth/papers/fun22.pdf
 	 * 
@@ -55,15 +56,9 @@ public class ShortestPathFinder {
 	 * @param onNewPathFound callback function, may be used for tracing
 	 */
 	public void computeShortestPathsFrom(Graph<?> g, Vertex sourceVertex, BiConsumer<Edge, Float> onNewPathFound) {
-		nodes.clear();
-		g.vertices().forEach(v -> {
-			var node = new SearchNode(v);
-			nodes.put(v, node);
-			node.cost = Float.POSITIVE_INFINITY;
-			node.parent = null;
-			node.visited = false;
-		});
-		var q = new SearchNodePQ();
+		nodes = new HashMap<>();
+		g.vertices().forEach(v -> nodes.put(v, new SearchNode(v)));
+		q = new SearchNodePQ();
 		var source = node(sourceVertex);
 		source.cost = 0;
 		q.insert(source);
@@ -72,8 +67,8 @@ public class ShortestPathFinder {
 			if (!u.visited) {
 				u.visited = true;
 				u.vertex.outgoingEdges().forEach(edge -> {
-					var v = node(edge.to()); // edge = (u.vertex, v.vertex)
-					var altCost = u.cost + edge.cost(); // cost of path (source, ..., u, v)
+					var v = node(edge.to());
+					var altCost = u.cost + edge.cost();
 					if (v.cost > altCost) {
 						onNewPathFound.accept(edge, altCost);
 						q.remove(v); // if vertex not in queue, does nothing

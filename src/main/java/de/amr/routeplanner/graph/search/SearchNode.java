@@ -26,6 +26,9 @@ package de.amr.routeplanner.graph.search;
 
 import de.amr.routeplanner.graph.Vertex;
 
+/**
+ * @author Armin Reichert
+ */
 public class SearchNode {
 	public final Vertex vertex;
 	public SearchNode parent;
@@ -34,5 +37,8 @@ public class SearchNode {
 
 	public SearchNode(Vertex vertex) {
 		this.vertex = vertex;
+		this.parent = null;
+		this.cost = Float.POSITIVE_INFINITY;
+		this.visited = false;
 	}
 }
