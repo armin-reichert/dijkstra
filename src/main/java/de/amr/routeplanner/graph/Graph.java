@@ -24,9 +24,9 @@ SOFTWARE.
 
 package de.amr.routeplanner.graph;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -36,29 +36,29 @@ import java.util.stream.Stream;
  */
 public class Graph<V extends Vertex> {
 
-	private final Set<V> vertexSet = new HashSet<>();
+	private final Map<String, V> vertexByID = new HashMap<>();
 
-	public void addVertex(V vertex) {
-		if (vertex(vertex.id()).isPresent()) {
-			throw new IllegalArgumentException("Vertex with ID '%s' already exists.".formatted(vertex.id()));
+	public void addVertex(String id, V vertex) {
+		if (vertex(id).isPresent()) {
+			throw new IllegalArgumentException("Vertex with ID '%s' already exists.".formatted(id));
 		}
-		vertexSet.add(vertex);
+		vertexByID.put(id, vertex);
 	}
 
 	public Optional<V> vertex(String id) {
-		return vertices().filter(v -> v.id().equals(id)).findAny();
+		return Optional.ofNullable(vertexByID.get(id));
 	}
 
 	public boolean contains(V vertex) {
-		return vertexSet.contains(vertex);
+		return vertexByID.values().contains(vertex);
 	}
 
 	public Stream<V> vertices() {
-		return vertexSet.stream();
+		return vertexByID.values().stream();
 	}
 
 	public int numVertices() {
-		return vertexSet.size();
+		return vertexByID.size();
 	}
 
 	public Stream<Edge> edges() {
@@ -76,7 +76,7 @@ public class Graph<V extends Vertex> {
 
 	public void addDirectedEdge(V from, V to, float cost) {
 		if (edge(from, to).isPresent()) {
-			throw new IllegalArgumentException("Duplicate edge (%s, %s)".formatted(from.id(), to.id()));
+			throw new IllegalArgumentException("Duplicate edge (%s, %s)".formatted(from, to));
 		}
 		from.addOutgoingEdge(to, cost);
 	}

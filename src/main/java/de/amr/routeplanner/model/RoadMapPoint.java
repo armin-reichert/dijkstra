@@ -34,8 +34,7 @@ public class RoadMapPoint extends Vertex {
 	private final String locationName;
 	private final GeoCoord coord;
 
-	public RoadMapPoint(String key, String locationName, float latitude, float longitude) {
-		super(key);
+	public RoadMapPoint(String locationName, float latitude, float longitude) {
 		this.locationName = locationName;
 		this.coord = new GeoCoord(latitude, longitude);
 	}

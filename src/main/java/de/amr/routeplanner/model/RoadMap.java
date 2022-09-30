@@ -88,8 +88,8 @@ public class RoadMap extends Graph<RoadMapPoint> {
 	}
 
 	public RoadMapPoint createAndAddPoint(String id, String location, float latitude, float longitude) {
-		var point = new RoadMapPoint(Objects.requireNonNull(id), location, latitude, longitude);
-		addVertex(point);
+		var point = new RoadMapPoint(location, latitude, longitude);
+		addVertex(Objects.requireNonNull(id), point);
 		return point;
 	}
 

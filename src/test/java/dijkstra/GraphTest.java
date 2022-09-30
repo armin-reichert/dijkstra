@@ -46,23 +46,23 @@ public class GraphTest {
 	@Test
 	public void testAddVertices() {
 		Assert.assertEquals(0, g.numVertices());
-		g.addVertex(new Vertex("A"));
+		g.addVertex("A", new Vertex());
 		Assert.assertEquals(1, g.numVertices());
 		Assert.assertTrue(g.vertex("A").isPresent());
 		Assert.assertFalse(g.vertex("a").isPresent());
-		g.addVertex(new Vertex("a"));
+		g.addVertex("a", new Vertex());
 		Assert.assertTrue(g.vertex("a").isPresent());
 		Assert.assertEquals(2, g.numVertices());
 	}
 
 	@Test
 	public void testAddEdges() {
-		var a = new Vertex("A");
-		var b = new Vertex("B");
-		var c = new Vertex("C");
-		g.addVertex(a);
-		g.addVertex(b);
-		g.addVertex(c);
+		var a = new Vertex();
+		var b = new Vertex();
+		var c = new Vertex();
+		g.addVertex("A", a);
+		g.addVertex("B", b);
+		g.addVertex("C", c);
 		Assert.assertEquals(0, g.numEdges());
 
 		g.addDirectedEdge(a, b, 0);
@@ -82,17 +82,17 @@ public class GraphTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testAddDuplicateVertex() {
-		var a = new Vertex("A");
-		g.addVertex(a);
-		g.addVertex(a);
+		var a = new Vertex();
+		g.addVertex("A", a);
+		g.addVertex("A", a);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testAddDuplicateEdge() {
-		var a = new Vertex("A");
-		var b = new Vertex("B");
-		g.addVertex(a);
-		g.addVertex(b);
+		var a = new Vertex();
+		var b = new Vertex();
+		g.addVertex("A", a);
+		g.addVertex("B", b);
 		g.addDirectedEdge(a, b, 0);
 		g.addDirectedEdge(a, b, 0);
 	}
