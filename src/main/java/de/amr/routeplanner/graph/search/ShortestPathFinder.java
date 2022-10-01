@@ -43,7 +43,6 @@ public class ShortestPathFinder<V extends Vertex> {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private SearchNodeMinPQ<V> q;
 	private Map<V, SearchNode<V>> nodes;
 	private V currentSource;
 
@@ -69,14 +68,14 @@ public class ShortestPathFinder<V extends Vertex> {
 	@SuppressWarnings("unchecked")
 	public void computeAllPaths(Graph<V> g, V sourceVertex) {
 		LOGGER.info(() -> "Compute shortest paths from %s using Dijkstra's algorithm".formatted(sourceVertex));
+		var pq = new SearchNodeMinPQ<V>();
 		nodes = new HashMap<>();
 		g.vertices().forEach(v -> nodes.put(v, new SearchNode<>(v)));
-		q = new SearchNodeMinPQ<>();
 		var source = node(sourceVertex);
 		source.cost = 0;
-		q.insert(source);
-		while (!q.isEmpty()) {
-			var u = q.extractMin();
+		pq.insert(source);
+		while (!pq.isEmpty()) {
+			var u = pq.extractMin();
 			if (!u.visited) {
 				u.visited = true;
 				u.vertex.outgoingEdges().forEach(edge -> {
@@ -84,10 +83,10 @@ public class ShortestPathFinder<V extends Vertex> {
 					var altCost = u.cost + edge.cost();
 					if (v.cost > altCost) {
 						onNewPathFound(edge, altCost);
-						q.remove(v); // if vertex not in queue, does nothing
+						pq.remove(v); // if vertex not in queue, does nothing
 						v.cost = altCost;
 						v.parent = u;
-						q.insert(v);
+						pq.insert(v);
 					}
 				});
 			}
