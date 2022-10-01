@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,11 +46,13 @@ public class ShortestPathFinder<V extends Vertex> {
 	private SearchNodePQ<V> q;
 	private Map<V, SearchNode<V>> nodes;
 	private V currentSource;
-	public BiConsumer<Edge, Float> onNewPathFound = (edge, cost) -> LOGGER
-			.trace(() -> "Found new path of cost %f ending with edge %s".formatted(edge, cost));
 
 	public SearchNode<V> node(V v) {
 		return nodes.get(v);
+	}
+
+	protected void onNewPathFound(Edge edge, float cost) {
+		LOGGER.trace(() -> "Found new path of cost %f ending with edge %s".formatted(edge, cost));
 	}
 
 	/**
@@ -66,7 +67,8 @@ public class ShortestPathFinder<V extends Vertex> {
 	 * @param onNewPathFound callback function, may be used for tracing
 	 */
 	@SuppressWarnings("unchecked")
-	public void computeShortestPathsFrom(Graph<V> g, V sourceVertex) {
+	public void computeAllPaths(Graph<V> g, V sourceVertex) {
+		LOGGER.info(() -> "Compute shortest paths from %s using Dijkstra's algorithm".formatted(sourceVertex));
 		nodes = new HashMap<>();
 		g.vertices().forEach(v -> nodes.put(v, new SearchNode<>(v)));
 		q = new SearchNodePQ<>();
@@ -81,7 +83,7 @@ public class ShortestPathFinder<V extends Vertex> {
 					var v = node((V) edge.to());
 					var altCost = u.cost + edge.cost();
 					if (v.cost > altCost) {
-						onNewPathFound.accept(edge, altCost);
+						onNewPathFound(edge, altCost);
 						q.remove(v); // if vertex not in queue, does nothing
 						v.cost = altCost;
 						v.parent = u;
@@ -92,14 +94,13 @@ public class ShortestPathFinder<V extends Vertex> {
 		}
 	}
 
-	public List<V> computeRoute(Graph<V> g, V source, V goal) {
+	public List<V> findPath(Graph<V> g, V source, V goal) {
 		if (source == null || goal == null) {
 			return List.of();
 		}
 		if (source != currentSource) {
 			currentSource = source;
-			LOGGER.info(() -> "Compute shortest paths from %s using Dijkstra's algorithm".formatted(currentSource));
-			computeShortestPathsFrom(g, currentSource);
+			computeAllPaths(g, currentSource);
 		}
 		var route = new LinkedList<V>();
 		for (var node = node(goal); node != null; node = node.parent) {

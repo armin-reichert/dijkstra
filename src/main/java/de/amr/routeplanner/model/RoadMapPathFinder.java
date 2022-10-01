@@ -41,11 +41,8 @@ public class RoadMapPathFinder extends ShortestPathFinder<RoadMapPoint> {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	public RoadMapPathFinder() {
-		onNewPathFound = this::traceNewPathFound;
-	}
-
-	private void traceNewPathFound(Edge edge, float newCost) {
+	@Override
+	protected void onNewPathFound(Edge edge, float newCost) {
 		RoadMapPoint pu = (RoadMapPoint) edge.from();
 		RoadMapPoint pv = (RoadMapPoint) edge.to();
 		if (node(pv).cost == Float.POSITIVE_INFINITY) {
@@ -57,7 +54,7 @@ public class RoadMapPathFinder extends ShortestPathFinder<RoadMapPoint> {
 	}
 
 	public List<RoadMapPoint> computeRoute(RoadMap map, String sourceLocation, String goalLocation) {
-		return computeRoute(map, map.point(sourceLocation).orElse(null), map.point(goalLocation).orElse(null));
+		return findPath(map, map.point(sourceLocation).orElse(null), map.point(goalLocation).orElse(null));
 	}
 
 	public void printAllRoutes(RoadMap map, Consumer<String> printer) {
