@@ -24,7 +24,6 @@ SOFTWARE.
 
 package de.amr.routeplanner.model;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -32,17 +31,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.routeplanner.graph.Edge;
+import de.amr.routeplanner.graph.Graph;
 import de.amr.routeplanner.graph.search.ShortestPathFinder;
 
 /**
  * @author Armin Reichert
  *
  */
-public class RoadMapPathFinder extends ShortestPathFinder {
+public class RoadMapPathFinder extends ShortestPathFinder<RoadMapPoint> {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private RoadMapPoint currentSource;
+	@Override
+	public void computeShortestPathsFrom(Graph<RoadMapPoint> g, RoadMapPoint source) {
+		computeShortestPathsFrom(g, source, this::traceNewPathFound);
+	}
 
 	private void traceNewPathFound(Edge edge, float newCost) {
 		RoadMapPoint pu = (RoadMapPoint) edge.from();
@@ -51,28 +54,12 @@ public class RoadMapPathFinder extends ShortestPathFinder {
 			LOGGER.trace(() -> "First path to %s (%.1f km) via %s".formatted(pv.locationName(), newCost, pu.locationName()));
 		} else {
 			LOGGER.trace(() -> "Shorter path to %s (%.1f km via %s instead of %.1f km via %s)".formatted(pv.locationName(),
-					newCost, pu.locationName(), node(pv).cost, ((RoadMapPoint) node(pv).parent.vertex).locationName()));
+					newCost, pu.locationName(), node(pv).cost, node(pv).parent.vertex.locationName()));
 		}
 	}
 
 	public List<RoadMapPoint> computeRoute(RoadMap map, String sourceLocation, String goalLocation) {
 		return computeRoute(map, map.findPoint(sourceLocation), map.findPoint(goalLocation));
-	}
-
-	public List<RoadMapPoint> computeRoute(RoadMap map, RoadMapPoint source, RoadMapPoint goal) {
-		if (source == null || goal == null) {
-			return List.of();
-		}
-		if (source != currentSource) {
-			currentSource = source;
-			LOGGER.info(() -> "*** Compute shortest paths from %s using Dijkstra's algorithm".formatted(currentSource));
-			computeShortestPathsFrom(map, currentSource, this::traceNewPathFound);
-		}
-		var route = new LinkedList<RoadMapPoint>();
-		for (var v = node(goal); v != null; v = v.parent) {
-			route.addFirst((RoadMapPoint) v.vertex);
-		}
-		return route;
 	}
 
 	public void printAllRoutes(RoadMap map, Consumer<String> printer) {
@@ -85,5 +72,4 @@ public class RoadMapPathFinder extends ShortestPathFinder {
 			});
 		});
 	}
-
 }

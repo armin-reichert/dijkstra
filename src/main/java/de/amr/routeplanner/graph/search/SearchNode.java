@@ -29,13 +29,13 @@ import de.amr.routeplanner.graph.Vertex;
 /**
  * @author Armin Reichert
  */
-public class SearchNode {
-	public final Vertex vertex;
-	public SearchNode parent;
+public class SearchNode<V extends Vertex> {
+	public final V vertex;
+	public SearchNode<V> parent;
 	public float cost;
 	public boolean visited;
 
-	public SearchNode(Vertex vertex) {
+	public SearchNode(V vertex) {
 		this.vertex = vertex;
 		this.parent = null;
 		this.cost = Float.POSITIVE_INFINITY;

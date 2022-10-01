@@ -29,14 +29,16 @@ import java.util.PriorityQueue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.amr.routeplanner.graph.Vertex;
+
 /**
  * @author Armin Reichert
  */
-public class SearchNodePQ {
+public class SearchNodePQ<V extends Vertex> {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private PriorityQueue<SearchNode> pq;
+	private PriorityQueue<SearchNode<V>> pq;
 
 	public SearchNodePQ() {
 		pq = new PriorityQueue<>((u, v) -> Float.compare(u.cost, v.cost));
@@ -46,18 +48,18 @@ public class SearchNodePQ {
 		return pq.isEmpty(); // constant time
 	}
 
-	public SearchNode extractMin() {
+	public SearchNode<V> extractMin() {
 		var min = pq.poll(); // log(n) time
 		LOGGER.trace(() -> "Extract min: %s".formatted(min));
 		return min;
 	}
 
-	public void insert(SearchNode v) {
+	public void insert(SearchNode<V> v) {
 		pq.add(v); // log(n) time
-		LOGGER.trace(() -> "Add: %s".formatted(v));
+		LOGGER.trace(() -> "Insert: %s".formatted(v));
 	}
 
-	public void remove(SearchNode v) {
+	public void remove(SearchNode<V> v) {
 		boolean removed = pq.remove(v); // O(n) time
 		if (removed) {
 			LOGGER.trace(() -> "Remove: %s".formatted(v));
