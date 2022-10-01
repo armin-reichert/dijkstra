@@ -15,6 +15,11 @@
 			<AppenderRef ref="Console" />
 		</Logger>
 		<Logger
+			name="de.amr.routeplanner.graph.search.ShortesPathFinder"
+			level="trace" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger
 			name="de.amr.routeplanner.model.RoadMapPathFinder"
 			level="trace" additivity="false">
 			<AppenderRef ref="Console" />

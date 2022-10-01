@@ -31,7 +31,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.routeplanner.graph.Edge;
-import de.amr.routeplanner.graph.Graph;
 import de.amr.routeplanner.graph.search.ShortestPathFinder;
 
 /**
@@ -42,9 +41,8 @@ public class RoadMapPathFinder extends ShortestPathFinder<RoadMapPoint> {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	@Override
-	public void computeShortestPathsFrom(Graph<RoadMapPoint> g, RoadMapPoint source) {
-		computeShortestPathsFrom(g, source, this::traceNewPathFound);
+	public RoadMapPathFinder() {
+		onNewPathFound = this::traceNewPathFound;
 	}
 
 	private void traceNewPathFound(Edge edge, float newCost) {

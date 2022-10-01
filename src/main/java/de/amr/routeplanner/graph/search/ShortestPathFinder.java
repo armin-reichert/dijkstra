@@ -47,6 +47,8 @@ public class ShortestPathFinder<V extends Vertex> {
 	private SearchNodePQ<V> q;
 	private Map<V, SearchNode<V>> nodes;
 	private V currentSource;
+	public BiConsumer<Edge, Float> onNewPathFound = (edge, cost) -> LOGGER
+			.trace(() -> "Found new path of cost %f ending with edge %s".formatted(edge, cost));
 
 	public SearchNode<V> node(V v) {
 		return nodes.get(v);
@@ -64,7 +66,7 @@ public class ShortestPathFinder<V extends Vertex> {
 	 * @param onNewPathFound callback function, may be used for tracing
 	 */
 	@SuppressWarnings("unchecked")
-	public void computeShortestPathsFrom(Graph<V> g, V sourceVertex, BiConsumer<Edge, Float> onNewPathFound) {
+	public void computeShortestPathsFrom(Graph<V> g, V sourceVertex) {
 		nodes = new HashMap<>();
 		g.vertices().forEach(v -> nodes.put(v, new SearchNode<>(v)));
 		q = new SearchNodePQ<>();
@@ -90,19 +92,14 @@ public class ShortestPathFinder<V extends Vertex> {
 		}
 	}
 
-	public void computeShortestPathsFrom(Graph<V> g, V source) {
-		computeShortestPathsFrom(g, source, (edge, cost) -> {
-		});
-	}
-
-	public List<V> computeRoute(Graph<V> map, V source, V goal) {
+	public List<V> computeRoute(Graph<V> g, V source, V goal) {
 		if (source == null || goal == null) {
 			return List.of();
 		}
 		if (source != currentSource) {
 			currentSource = source;
-			LOGGER.info(() -> "*** Compute shortest paths from %s using Dijkstra's algorithm".formatted(currentSource));
-			computeShortestPathsFrom(map, currentSource);
+			LOGGER.info(() -> "Compute shortest paths from %s using Dijkstra's algorithm".formatted(currentSource));
+			computeShortestPathsFrom(g, currentSource);
 		}
 		var route = new LinkedList<V>();
 		for (var node = node(goal); node != null; node = node.parent) {
