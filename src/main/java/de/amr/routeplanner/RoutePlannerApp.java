@@ -75,7 +75,7 @@ public class RoutePlannerApp {
 			LOGGER.error("Could not set Nimbus look");
 		}
 		var window = new RoutePlannerWindow();
-		var locationNames = map.locations().toArray(String[]::new);
+		var locationNames = map.locationNames().toArray(String[]::new);
 		window.comboStart().setModel(new DefaultComboBoxModel<>(locationNames));
 		window.comboGoal().setModel(new DefaultComboBoxModel<>(locationNames));
 		window.listRoute().setModel(new DefaultListModel<>());
