@@ -43,7 +43,7 @@ public class ShortestPathFinder<V extends Vertex> {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private SearchNodePQ<V> q;
+	private SearchNodeMinPQ<V> q;
 	private Map<V, SearchNode<V>> nodes;
 	private V currentSource;
 
@@ -71,7 +71,7 @@ public class ShortestPathFinder<V extends Vertex> {
 		LOGGER.info(() -> "Compute shortest paths from %s using Dijkstra's algorithm".formatted(sourceVertex));
 		nodes = new HashMap<>();
 		g.vertices().forEach(v -> nodes.put(v, new SearchNode<>(v)));
-		q = new SearchNodePQ<>();
+		q = new SearchNodeMinPQ<>();
 		var source = node(sourceVertex);
 		source.cost = 0;
 		q.insert(source);

@@ -34,13 +34,13 @@ import de.amr.routeplanner.graph.Vertex;
 /**
  * @author Armin Reichert
  */
-public class SearchNodePQ<V extends Vertex> {
+public class SearchNodeMinPQ<V extends Vertex> {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private PriorityQueue<SearchNode<V>> pq;
 
-	public SearchNodePQ() {
+	public SearchNodeMinPQ() {
 		pq = new PriorityQueue<>((u, v) -> Float.compare(u.cost, v.cost));
 	}
 
