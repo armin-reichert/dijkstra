@@ -6,7 +6,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
-		<mainClass>de.amr.schule.routeplanner.RoutePlannerApp</mainClass>
+		<mainClass>de.amr.routeplanner.RoutePlannerApp</mainClass>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>18</maven.compiler.source>
 		<maven.compiler.target>18</maven.compiler.target>

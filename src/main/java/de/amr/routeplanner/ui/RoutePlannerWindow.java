@@ -33,6 +33,7 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -73,6 +74,8 @@ public class RoutePlannerWindow extends JFrame {
 	private static final Color COLOR_START = new Color(0, 255, 0, 100);
 	private static final Color COLOR_GOAL = new Color(0, 0, 255, 100);
 
+	private static final ResourceBundle TEXTS = ResourceBundle.getBundle("texts");
+
 	private final Action actionComputeRoute = new AbstractAction("Route") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -98,7 +101,7 @@ public class RoutePlannerWindow extends JFrame {
 	private boolean shiftPressed;
 
 	public RoutePlannerWindow() {
-		setTitle("Routenplaner Saarland");
+		setTitle(TEXTS.getString("title"));
 		setResizable(false);
 		setSize(1030, 670);
 		setLocation(30, 30);
@@ -219,7 +222,7 @@ public class RoutePlannerWindow extends JFrame {
 	private void drawHelpText(Graphics2D g) {
 		g.setFont(new Font(Font.DIALOG, Font.BOLD, 12));
 		g.setColor(Color.GRAY);
-		g.drawString("Click near city to set start, Shift-CLICK to set goal", 20, 20);
+		g.drawString(TEXTS.getString("hint"), 20, 20);
 	}
 
 	private void drawMouseCoordAtCursorPosition(Graphics2D g) {
