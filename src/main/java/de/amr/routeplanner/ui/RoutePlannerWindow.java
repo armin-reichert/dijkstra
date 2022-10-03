@@ -46,6 +46,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 
@@ -170,10 +171,24 @@ public class RoutePlannerWindow extends JFrame {
 		});
 	}
 
-	public void setMap(RoadMap map, RoadMapPathFinder pathFinder) {
-		this.map = Objects.requireNonNull(map);
-		this.pathFinder = pathFinder;
+	public void init(RoadMap map, RoadMapPathFinder pathFinder) {
+		this.map = Objects.requireNonNull(map, "RoadMap must be non-null");
+		this.pathFinder = Objects.requireNonNull(pathFinder, "Path finder must be non-null");
 		mapImage.setOnRepaint(this::onRepaint);
+		var locationNames = map.locationNames().toArray(String[]::new);
+		comboStart().setModel(new DefaultComboBoxModel<>(locationNames));
+		comboGoal().setModel(new DefaultComboBoxModel<>(locationNames));
+		listRoute().setModel(new DefaultListModel<>());
+		comboStart().setSelectedItem("Losheim am See");
+		comboGoal().setSelectedItem("St. Ingbert");
+		// when 'p' is pressed in route list, compute and print routes from each city
+		listRoute().getInputMap().put(KeyStroke.getKeyStroke('p'), "actionPrintAllRoutes");
+		listRoute().getActionMap().put("actionPrintAllRoutes", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				pathFinder.printAllRoutes(map, LOGGER::info);
+			}
+		});
 	}
 
 	public JComboBox<String> comboStart() {

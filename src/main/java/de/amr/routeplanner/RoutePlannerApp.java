@@ -24,13 +24,8 @@ SOFTWARE.
 
 package de.amr.routeplanner;
 
-import java.awt.event.ActionEvent;
 import java.util.MissingResourceException;
 
-import javax.swing.AbstractAction;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
@@ -59,17 +54,17 @@ public class RoutePlannerApp {
 	private final RoadMapPathFinder pathFinder;
 
 	public RoutePlannerApp() {
-		map = loadMapFromFile("saarland.txt");
+		map = loadMapFile("saarland.txt");
 		pathFinder = new RoadMapPathFinder();
 	}
 
-	private RoadMap loadMapFromFile(String mapFilename) {
-		var resource = getClass().getResourceAsStream("/" + mapFilename);
-		if (resource == null) {
-			throw new MissingResourceException("Could not read map from file '%s'".formatted(mapFilename),
-					RoutePlannerApp.class.getName(), mapFilename);
+	private RoadMap loadMapFile(String fileName) {
+		var res = getClass().getResourceAsStream("/" + fileName);
+		if (res == null) {
+			throw new MissingResourceException("Could not read map from file '%s'".formatted(fileName),
+					RoutePlannerApp.class.getName(), fileName);
 		}
-		return RoadMapReader.readMap(resource);
+		return RoadMapReader.readMap(res);
 	}
 
 	private void createAndShowUI() {
@@ -79,20 +74,6 @@ public class RoutePlannerApp {
 			LOGGER.error("Could not set Nimbus look");
 		}
 		var window = new RoutePlannerWindow();
-		window.setMap(map, pathFinder);
-		var locationNames = map.locationNames().toArray(String[]::new);
-		window.comboStart().setModel(new DefaultComboBoxModel<>(locationNames));
-		window.comboGoal().setModel(new DefaultComboBoxModel<>(locationNames));
-		window.listRoute().setModel(new DefaultListModel<>());
-		window.comboStart().setSelectedItem("Losheim am See");
-		window.comboGoal().setSelectedItem("St. Ingbert");
-		// when 'p' is pressed in route list, compute and print routes from each city
-		window.listRoute().getInputMap().put(KeyStroke.getKeyStroke('p'), "actionPrintAllRoutes");
-		window.listRoute().getActionMap().put("actionPrintAllRoutes", new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				pathFinder.printAllRoutes(map, LOGGER::info);
-			}
-		});
+		window.init(map, pathFinder);
 	}
 }
