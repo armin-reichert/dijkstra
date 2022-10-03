@@ -79,11 +79,11 @@ public class RoutePlannerApp {
 			LOGGER.error("Could not set Nimbus look");
 		}
 		var window = new RoutePlannerWindow();
+		window.setMap(map, pathFinder);
 		var locationNames = map.locationNames().toArray(String[]::new);
 		window.comboStart().setModel(new DefaultComboBoxModel<>(locationNames));
 		window.comboGoal().setModel(new DefaultComboBoxModel<>(locationNames));
 		window.listRoute().setModel(new DefaultListModel<>());
-		window.setMap(map, pathFinder);
 		window.comboStart().setSelectedItem("Losheim am See");
 		window.comboGoal().setSelectedItem("St. Ingbert");
 		// when 'p' is pressed in route list, compute and print routes from each city
