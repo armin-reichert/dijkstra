@@ -51,21 +51,25 @@ public class RoutePlannerApp {
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	public static void main(String[] args) {
-		var app = new RoutePlannerApp("saarland.txt");
+		var app = new RoutePlannerApp();
 		SwingUtilities.invokeLater(app::createAndShowUI);
 	}
 
-	private RoadMap map;
-	private RoadMapPathFinder pathFinder;
+	private final RoadMap map;
+	private final RoadMapPathFinder pathFinder;
 
-	public RoutePlannerApp(String mapFile) {
-		var resource = getClass().getResourceAsStream("/" + mapFile);
-		if (resource == null) {
-			throw new MissingResourceException("Could not read map from file '%s'".formatted(mapFile),
-					RoutePlannerApp.class.getName(), mapFile);
-		}
-		map = RoadMapReader.readMap(resource);
+	public RoutePlannerApp() {
+		map = loadMapFromFile("saarland.txt");
 		pathFinder = new RoadMapPathFinder();
+	}
+
+	private RoadMap loadMapFromFile(String mapFilename) {
+		var resource = getClass().getResourceAsStream("/" + mapFilename);
+		if (resource == null) {
+			throw new MissingResourceException("Could not read map from file '%s'".formatted(mapFilename),
+					RoutePlannerApp.class.getName(), mapFilename);
+		}
+		return RoadMapReader.readMap(resource);
 	}
 
 	private void createAndShowUI() {
@@ -82,13 +86,13 @@ public class RoutePlannerApp {
 		window.setMap(map, pathFinder);
 		window.comboStart().setSelectedItem("Losheim am See");
 		window.comboGoal().setSelectedItem("St. Ingbert");
-
-		window.listRoute().getActionMap().put("printAll", new AbstractAction() {
+		// when 'p' is pressed in route list, compute and print routes from each city
+		window.listRoute().getInputMap().put(KeyStroke.getKeyStroke('p'), "actionPrintAllRoutes");
+		window.listRoute().getActionMap().put("actionPrintAllRoutes", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				pathFinder.printAllRoutes(map, LOGGER::info);
 			}
 		});
-		window.listRoute().getInputMap().put(KeyStroke.getKeyStroke('p'), "printAll");
 	}
 }
