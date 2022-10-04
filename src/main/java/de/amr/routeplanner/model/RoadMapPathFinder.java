@@ -35,7 +35,6 @@ import de.amr.routeplanner.graph.search.ShortestPathFinder;
 
 /**
  * @author Armin Reichert
- *
  */
 public class RoadMapPathFinder extends ShortestPathFinder<RoadMapPoint> {
 
@@ -43,13 +42,13 @@ public class RoadMapPathFinder extends ShortestPathFinder<RoadMapPoint> {
 
 	@Override
 	protected void onNewPathFound(Edge edge, float newCost) {
-		RoadMapPoint pu = (RoadMapPoint) edge.from();
-		RoadMapPoint pv = (RoadMapPoint) edge.to();
-		if (node(pv).cost == Float.POSITIVE_INFINITY) {
-			LOGGER.trace(() -> "First path to %s (%.1f km) via %s".formatted(pv.locationName(), newCost, pu.locationName()));
+		var u = (RoadMapPoint) edge.from();
+		var v = (RoadMapPoint) edge.to();
+		if (node(v).cost == Float.POSITIVE_INFINITY) {
+			LOGGER.trace(() -> "First path to %s (%.1f km) via %s".formatted(v.locationName(), newCost, u.locationName()));
 		} else {
-			LOGGER.trace(() -> "Shorter path to %s (%.1f km via %s instead of %.1f km via %s)".formatted(pv.locationName(),
-					newCost, pu.locationName(), node(pv).cost, node(pv).parent.vertex.locationName()));
+			LOGGER.trace(() -> "Shorter path to %s (%.1f km via %s instead of %.1f km via %s)".formatted(v.locationName(),
+					newCost, u.locationName(), node(v).cost, node(v).parent.vertex.locationName()));
 		}
 	}
 
