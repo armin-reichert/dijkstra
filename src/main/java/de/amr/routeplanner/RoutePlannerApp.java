@@ -71,7 +71,7 @@ public class RoutePlannerApp {
 		try {
 			UIManager.setLookAndFeel(NimbusLookAndFeel.class.getName());
 		} catch (Exception e) {
-			LOGGER.error("Could not set Nimbus look");
+			LOGGER.catching(e);
 		}
 		var window = new RoutePlannerWindow();
 		window.init(map, pathFinder);
