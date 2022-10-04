@@ -59,12 +59,12 @@ public class RoutePlannerApp {
 	}
 
 	private RoadMap loadMapFile(String fileName) {
-		var res = getClass().getResourceAsStream("/" + fileName);
-		if (res == null) {
+		var stream = getClass().getResourceAsStream("/" + fileName);
+		if (stream == null) {
 			throw new MissingResourceException("Could not read map from file '%s'".formatted(fileName),
 					RoutePlannerApp.class.getName(), fileName);
 		}
-		return RoadMapReader.readMap(res);
+		return new RoadMapReader().read(stream);
 	}
 
 	private void createAndShowUI() {

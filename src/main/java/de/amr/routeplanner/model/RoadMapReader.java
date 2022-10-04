@@ -44,18 +44,14 @@ public class RoadMapReader {
 	private static final int STATE_READ_LOCATIONS = 1;
 	private static final int STATE_READ_ROADS = 2;
 
-	private static String[] splitAndTrimCSV(String line) {
+	private static String[] split(String line) {
 		return Stream.of(line.split(",")).map(String::trim).toArray(String[]::new);
-	}
-
-	public static RoadMap readMap(InputStream is) {
-		return new RoadMapReader().read(is);
 	}
 
 	private int state = STATE_READ;
 	private int lineNumber;
 
-	private RoadMap read(InputStream is) {
+	public RoadMap read(InputStream is) {
 		lineNumber = 0;
 		var map = new RoadMap();
 		try (var rdr = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
@@ -94,7 +90,7 @@ public class RoadMapReader {
 
 	private boolean parseLocation(String line, RoadMap map) {
 		// <key> <location name> <latitude> <longitude>
-		String[] tokens = splitAndTrimCSV(line);
+		String[] tokens = split(line);
 		if (tokens.length != 4) {
 			LOGGER.error(() -> "Line %d: '%s': Invalid location spec".formatted(lineNumber, line));
 			return false;
@@ -127,7 +123,7 @@ public class RoadMapReader {
 
 	private boolean parseRoad(String line, RoadMap map) {
 		// <from> <to> <cost>
-		String[] tokens = splitAndTrimCSV(line);
+		String[] tokens = split(line);
 		if (tokens.length != 3) {
 			LOGGER.error(() -> "Line %d: '%s': Invalid road spec".formatted(lineNumber, line));
 			return false;
