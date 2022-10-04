@@ -24,10 +24,11 @@ SOFTWARE.
 
 package de.amr.routeplanner.graph.search;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,8 +70,8 @@ public class ShortestPathFinder<V extends Vertex> {
 	public void computeAllPaths(Graph<V> g, V sourceVertex) {
 		LOGGER.info(() -> "Compute shortest paths from %s using Dijkstra's algorithm".formatted(sourceVertex));
 		var pq = new SearchNodeMinPQ<V>();
-		nodes = new HashMap<>();
-		g.vertices().forEach(v -> nodes.put(v, new SearchNode<>(v)));
+		// create search nodes for all vertices
+		nodes = g.vertices().collect(Collectors.toMap(Function.<V>identity(), SearchNode::new));
 		var source = node(sourceVertex);
 		source.cost = 0;
 		pq.insert(source);
