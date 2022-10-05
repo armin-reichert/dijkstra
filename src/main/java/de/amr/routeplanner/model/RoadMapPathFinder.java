@@ -31,12 +31,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.routeplanner.graph.Edge;
-import de.amr.routeplanner.graph.search.ShortestPathFinder;
+import de.amr.routeplanner.graph.search.PathFinder;
 
 /**
  * @author Armin Reichert
  */
-public class RoadMapPathFinder extends ShortestPathFinder<RoadMapPoint> {
+public class RoadMapPathFinder extends PathFinder<RoadMapPoint> {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 

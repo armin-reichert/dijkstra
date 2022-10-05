@@ -54,17 +54,20 @@ public class RoutePlannerApp {
 	private final RoadMapPathFinder pathFinder;
 
 	public RoutePlannerApp() {
-		map = loadMapFile("saarland.txt");
+		map = loadMapFile("/", "saarland.txt");
 		pathFinder = new RoadMapPathFinder();
 	}
 
-	private RoadMap loadMapFile(String fileName) {
-		var stream = getClass().getResourceAsStream("/" + fileName);
+	private RoadMap loadMapFile(String path, String fileName) {
+		var stream = getClass().getResourceAsStream(path + fileName);
 		if (stream == null) {
-			throw new MissingResourceException("Could not read map from file '%s'".formatted(fileName),
+			throw new MissingResourceException(
+					"Could not read map from resource path '%s' and file '%s'".formatted(path, fileName),
 					RoutePlannerApp.class.getName(), fileName);
 		}
-		return new RoadMapReader().read(stream);
+		var roadMap = new RoadMapReader().read(stream);
+		LOGGER.info(() -> "Road Map '%s' loaded successfully".formatted(fileName));
+		return roadMap;
 	}
 
 	private void createAndShowUI() {

@@ -40,7 +40,7 @@ import de.amr.routeplanner.graph.Vertex;
 /**
  * @author Armin Reichert
  */
-public class ShortestPathFinder<V extends Vertex> {
+public class PathFinder<V extends Vertex> {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
