@@ -56,6 +56,17 @@ public class GraphTest {
 	}
 
 	@Test
+	public void testAddVertexWithNullID() {
+		var v = new Vertex();
+		Assert.assertThrows(NullPointerException.class, () -> g.addVertex(null, v));
+	}
+
+	@Test
+	public void testAddNullVertex() {
+		Assert.assertThrows(NullPointerException.class, () -> g.addVertex("id", null));
+	}
+
+	@Test
 	public void testAddEdges() {
 		var a = new Vertex();
 		var b = new Vertex();
