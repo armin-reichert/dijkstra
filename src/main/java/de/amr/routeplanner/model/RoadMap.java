@@ -61,6 +61,19 @@ public class RoadMap extends Graph<RoadMapPoint> {
 		return pointsOrderedByLocationName().map(RoadMapPoint::locationName);
 	}
 
+	public void printAllRoutes(Consumer<String> printer) {
+		print(printer, RoadMap::orderedByLocationName);
+		locationNames().forEach(start -> {
+			var pathFinder = new RoadMapPathFinder();
+			locationNames().forEach(goal -> {
+				var route = pathFinder.computeRoute(this, start, goal);
+				var routeDesc = route.stream().map(p -> "%s %.1f km".formatted(p.locationName(), pathFinder.node(p).cost))
+						.toList();
+				printer.accept("%s nach %s: %s".formatted(start, goal, routeDesc));
+			});
+		});
+	}
+
 	public void print(Consumer<String> printer, Comparator<RoadMapPoint> order) {
 		vertices().sorted(order).map(RoadMapPoint::toString).forEach(printer::accept);
 		vertices().sorted(order).flatMap(Vertex::outgoingEdges).map(RoadMap::edgeToString).forEach(printer::accept);

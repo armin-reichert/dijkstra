@@ -186,7 +186,7 @@ public class RoutePlannerWindow extends JFrame {
 		listRoute().getActionMap().put("actionPrintAllRoutes", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				pathFinder.printAllRoutes(map, LOGGER::info);
+				map.printAllRoutes(LOGGER::info);
 			}
 		});
 	}

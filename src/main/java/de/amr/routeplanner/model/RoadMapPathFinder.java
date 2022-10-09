@@ -25,7 +25,6 @@ SOFTWARE.
 package de.amr.routeplanner.model;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,14 +55,4 @@ public class RoadMapPathFinder extends PathFinder<RoadMapPoint> {
 		return findPath(map, map.point(sourceLocation).orElse(null), map.point(goalLocation).orElse(null));
 	}
 
-	public void printAllRoutes(RoadMap map, Consumer<String> printer) {
-		map.print(printer, RoadMap::orderedByLocationName);
-		map.locationNames().forEach(start -> {
-			map.locationNames().forEach(goal -> {
-				var route = computeRoute(map, start, goal);
-				var routeDesc = route.stream().map(p -> "%s %.1f km".formatted(p.locationName(), node(p).cost)).toList();
-				printer.accept("%s nach %s: %s".formatted(start, goal, routeDesc));
-			});
-		});
-	}
 }
