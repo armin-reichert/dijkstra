@@ -24,7 +24,11 @@ SOFTWARE.
 
 package dijkstra;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,25 +49,25 @@ public class GraphTest {
 
 	@Test
 	public void testAddVertices() {
-		Assert.assertEquals(0, g.numVertices());
+		assertEquals(0, g.numVertices());
 		g.addVertex("A", new Vertex());
-		Assert.assertEquals(1, g.numVertices());
-		Assert.assertTrue(g.vertex("A").isPresent());
-		Assert.assertFalse(g.vertex("a").isPresent());
+		assertEquals(1, g.numVertices());
+		assertTrue(g.vertex("A").isPresent());
+		assertFalse(g.vertex("a").isPresent());
 		g.addVertex("a", new Vertex());
-		Assert.assertTrue(g.vertex("a").isPresent());
-		Assert.assertEquals(2, g.numVertices());
+		assertTrue(g.vertex("a").isPresent());
+		assertEquals(2, g.numVertices());
 	}
 
 	@Test
 	public void testAddVertexWithNullID() {
 		var v = new Vertex();
-		Assert.assertThrows(NullPointerException.class, () -> g.addVertex(null, v));
+		assertThrows(NullPointerException.class, () -> g.addVertex(null, v));
 	}
 
 	@Test
 	public void testAddNullVertex() {
-		Assert.assertThrows(NullPointerException.class, () -> g.addVertex("id", null));
+		assertThrows(NullPointerException.class, () -> g.addVertex("id", null));
 	}
 
 	@Test
@@ -74,21 +78,21 @@ public class GraphTest {
 		g.addVertex("A", a);
 		g.addVertex("B", b);
 		g.addVertex("C", c);
-		Assert.assertEquals(0, g.numEdges());
+		assertEquals(0, g.numEdges());
 
 		g.addDirectedEdge(a, b, 0);
-		Assert.assertTrue(g.edge(a, b).isPresent());
-		Assert.assertEquals(1, g.numEdges());
+		assertTrue(g.edge(a, b).isPresent());
+		assertEquals(1, g.numEdges());
 
 		g.addDirectedEdge(b, c, 0);
-		Assert.assertTrue(g.edge(b, c).isPresent());
-		Assert.assertEquals(2, g.numEdges());
+		assertTrue(g.edge(b, c).isPresent());
+		assertEquals(2, g.numEdges());
 
 		g.addDirectedEdge(c, a, 0);
-		Assert.assertTrue(g.edge(c, a).isPresent());
-		Assert.assertEquals(3, g.numEdges());
+		assertTrue(g.edge(c, a).isPresent());
+		assertEquals(3, g.numEdges());
 
-		Assert.assertFalse(g.edge(c, b).isPresent());
+		assertFalse(g.edge(c, b).isPresent());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
