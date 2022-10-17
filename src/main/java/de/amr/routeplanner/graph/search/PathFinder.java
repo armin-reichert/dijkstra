@@ -61,6 +61,7 @@ public class PathFinder<V extends Vertex> {
 	 * TODO: Not sure if using "visited" and if removing vertices from queue are really needed
 	 * 
 	 * @see https://cs.au.dk/~gerth/papers/fun22.pdf
+	 * @see https://www.aaai.org/ocs/index.php/SOCS/SOCS11/paper/viewFile/4017/4357
 	 * 
 	 * @param g              a graph with non-negative edge weights
 	 * @param sourceVertex   the source vertex
