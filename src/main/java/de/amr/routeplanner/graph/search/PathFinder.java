@@ -60,6 +60,7 @@ public class PathFinder<V extends Vertex> {
 	 * <p>
 	 * TODO: Not sure if using "visited" and if removing vertices from queue are really needed
 	 * 
+	 * @see http://www-m3.ma.tum.de/foswiki/pub/MN0506/WebHome/dijkstra.pdf
 	 * @see https://cs.au.dk/~gerth/papers/fun22.pdf
 	 * @see https://www.aaai.org/ocs/index.php/SOCS/SOCS11/paper/viewFile/4017/4357
 	 * 
