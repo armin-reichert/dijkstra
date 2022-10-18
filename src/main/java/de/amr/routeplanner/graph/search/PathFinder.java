@@ -24,11 +24,10 @@ SOFTWARE.
 
 package de.amr.routeplanner.graph.search;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,7 +47,7 @@ public class PathFinder<V extends Vertex> {
 	private V currentSource;
 
 	public SearchNode<V> node(V v) {
-		return nodes.get(v);
+		return nodes.computeIfAbsent(v, SearchNode::new);
 	}
 
 	protected void onNewPathFound(Edge edge, float cost) {
@@ -57,41 +56,41 @@ public class PathFinder<V extends Vertex> {
 
 	/**
 	 * Computes the shortest path from the given source vertex to all vertices of the graph using Dijkstra's algorithm.
-	 * <p>
-	 * TODO: Not sure if using "visited" and if removing vertices from queue are really needed
+	 * (In fact this is not the classic Dijkstra algorithm but more a Uniform-Cost search, see the cited paper by Ariel
+	 * Felner.)
 	 * 
-	 * @see http://www-m3.ma.tum.de/foswiki/pub/MN0506/WebHome/dijkstra.pdf
-	 * @see https://cs.au.dk/~gerth/papers/fun22.pdf
-	 * @see https://www.aaai.org/ocs/index.php/SOCS/SOCS11/paper/viewFile/4017/4357
+	 * @see <a href="http://www-m3.ma.tum.de/foswiki/pub/MN0506/WebHome/dijkstra.pdf">Edsger Dijkstra: A Note on Two
+	 *      Problems in Connexion with Graphs</a>
+	 * @see <a href="https://cs.au.dk/~gerth/papers/fun22.pdf">Gerth Stolting Brodal: Priority Queues with Decreasing
+	 *      Keys</a>
+	 * @see <a href="https://www.aaai.org/ocs/index.php/SOCS/SOCS11/paper/viewFile/4017/4357">Ariel Felner: Position
+	 *      Paper: Dijkstra’s Algorithm versus Uniform Cost Search or a Case Against Dijkstra’s Algorithm</a>
 	 * 
-	 * @param g              a graph with non-negative edge weights
-	 * @param sourceVertex   the source vertex
-	 * @param onNewPathFound callback function, may be used for tracing
+	 * @param g      directed graph with non-negative edge weights
+	 * @param source the source vertex
 	 */
 	@SuppressWarnings("unchecked")
-	public void computeAllPaths(Graph<V> g, V sourceVertex) {
-		LOGGER.info(() -> "Compute shortest paths from %s using Dijkstra's algorithm".formatted(sourceVertex));
-		var pq = new SearchNodeMinPQ<V>();
-		// create search nodes for all vertices
-		nodes = g.vertices().collect(Collectors.toMap(Function.<V>identity(), SearchNode::new));
-		var source = node(sourceVertex);
-		source.cost = 0;
-		pq.insert(source);
-		while (!pq.isEmpty()) {
-			var u = pq.extractMin();
+	public void computeAllPaths(Graph<V> g, V source) {
+		LOGGER.info(() -> "Compute shortest paths from %s using Dijkstra's algorithm".formatted(source));
+		this.nodes = new HashMap<>();
+		var open = new SearchNodeMinPQ<V>();
+		node(source).cost = 0;
+		open.insert(node(source)); // in Dijkstra algorithm, *all* nodes are added to the queue!
+		while (!open.isEmpty()) {
+			var u = open.extractMin();
 			if (!u.visited) {
-				u.visited = true;
 				u.vertex.outgoingEdges().forEach(edge -> {
 					var v = node((V) edge.to());
 					var altCost = u.cost + edge.cost();
 					if (v.cost > altCost) {
 						onNewPathFound(edge, altCost);
-						pq.remove(v); // if vertex not in queue, does nothing
 						v.cost = altCost;
 						v.parent = u;
-						pq.insert(v);
+						open.remove(v); // if vertex not in queue, does nothing
+						open.insert(v);
 					}
 				});
+				u.visited = true; // add to CLOSED list
 			}
 		}
 	}
