@@ -64,7 +64,6 @@ import net.miginfocom.swing.MigLayout;
  */
 public class RoutePlannerWindow extends JFrame {
 
-	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private static final float MAP_LATITUDE_MIN = 49.111948f; // bottom
